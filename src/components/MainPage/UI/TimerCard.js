@@ -8,7 +8,11 @@ function TimerCard(props) {
 					? styles.timerRunningBackground
 					: styles.timerPausedBackground
 			}`}>
-			{props.children}
+			<h2>{props.timer}</h2>
+			<p>
+				{props.minutes}:{props.seconds}
+			</p>
+			<div>{props.children}</div>
 		</div>
 	);
 }
