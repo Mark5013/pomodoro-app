@@ -1,3 +1,18 @@
-.big {
-	width: 100px;
+.breakButtons {
+	padding: 0.25em 0.75em;
+	background-color: none;
+	color: white;
+	background: none;
+	font-weight: 700;
+	border: none;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 1.2em;
+	font-family: inherit;
+}
+
+.breakButtons:hover,
+.breakButtons:focus {
+	background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
 }

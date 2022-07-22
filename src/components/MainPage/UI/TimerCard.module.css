@@ -1,7 +1,9 @@
 .card {
-	width: 50%;
-	height: 70vh;
+	width: 450px;
+	height: 35vh;
 	margin: auto;
+	border-radius: 20px;
+	text-align: center;
 }
 
 .timerRunningBackground {
@@ -10,4 +12,17 @@
 
 .timerPausedBackground {
 	background-color: red;
+}
+
+.timerButtons {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 2em 1em;
+	margin-top: 1em;
+}
+
+.timerText {
+	font-size: 4em;
+	margin-top: 0.5em;
 }
