@@ -1,23 +1,22 @@
 import styles from "./TimerCard.module.css";
-import Button from "../../Shared/UI/Button";
+import { useContext } from "react";
+import ModeContext from "../../../store/modeContext";
 
 function TimerCard(props) {
+	const modeCtx = useContext(ModeContext);
+
 	return (
 		<div
 			className={`${styles.card} ${
-				props.timerRunning
-					? styles.timerRunningBackground
-					: styles.timerPausedBackground
+				modeCtx.mode === "pomodoro"
+					? styles.pomodoroMode
+					: modeCtx.mode === "shortBreak"
+					? styles.shortBreakMode
+					: modeCtx.mode === "longBreak"
+					? styles.longBreakMode
+					: ""
 			}`}>
-			<div className={styles.timerButtons}>
-				<Button text="Pomodoro" type="button" />
-				<Button text="Short Break" type="button" />
-				<Button text="Long Break" type="button" />
-			</div>
-			<p className={styles.timerText}>
-				{props.minutes}:{props.seconds}
-			</p>
-			<div>{props.children}</div>
+			<div className={styles.children}>{props.children}</div>
 		</div>
 	);
 }

@@ -1,8 +1,8 @@
 import styles from "./Header.module.css";
 
-function Header(props) {
+function Header() {
 	return (
-		<div className={styles.header}>
+		<div className={`${styles.header}`}>
 			<h1 className={styles.title}>Pomodoro Timer</h1>
 		</div>
 	);

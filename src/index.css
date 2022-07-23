@@ -12,3 +12,15 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
+
+.pomodoroBackground {
+	background-color: #a5c9ca;
+}
+
+.shortBreakBackground {
+	background-color: #395b64;
+}
+
+.longBreakBackground {
+	background-color: #2c3333;
+}
