@@ -1,4 +1,4 @@
-.breakButtons {
+.timerButton {
 	padding: 0.25em 0.75em;
 	background-color: none;
 	color: white;
@@ -12,7 +12,7 @@
 	font-family: inherit;
 }
 
-.breakButtons:hover,
-.breakButtons:focus {
+.timerButton:hover,
+.timerButton:focus {
 	background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
 }

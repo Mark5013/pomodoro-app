@@ -1,0 +1,9 @@
+.list {
+	list-style: none;
+	padding-left: 0;
+}
+
+.listContainer {
+	width: 350px;
+	margin: 5em auto;
+}

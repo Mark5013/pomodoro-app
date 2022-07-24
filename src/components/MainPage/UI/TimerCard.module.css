@@ -11,14 +11,14 @@
 	padding: 0.5em;
 }
 
-.pomodoroMode {
+.pomodoro {
 	background-color: #a5c9ca;
 }
 
-.shortBreakMode {
+.shortBreak {
 	background-color: #395b64;
 }
 
-.longBreakMode {
+.longBreak {
 	background-color: #2c3333;
 }

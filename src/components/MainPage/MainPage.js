@@ -5,6 +5,7 @@ import ModeContext from "../../store/modeContext";
 import Header from "../Shared/Header/Header";
 import TimerCard from "./UI/TimerCard";
 import Button from "../Shared/UI/Button";
+import TaskList from "./UI/TaskList";
 
 let interval;
 
@@ -105,16 +106,19 @@ function MainPage() {
 							text="Pomodoro"
 							type="button"
 							onClick={setPomodoroMode}
+							style="timerButton"
 						/>
 						<Button
 							text="Short Break"
 							type="button"
 							onClick={setShortBreakMode}
+							style="timerButton"
 						/>
 						<Button
 							text="Long Break"
 							type="button"
 							onClick={setLongBreakMode}
+							style="timerButton"
 						/>
 					</div>
 					<p className={styles.timerText}>
@@ -125,14 +129,17 @@ function MainPage() {
 							text="Start"
 							type="button"
 							onClick={startTimer}
+							style="timerButton"
 						/>
 						<Button
 							text="Pause"
 							type="button"
 							onClick={clearTimer}
+							style="timerButton"
 						/>
 					</div>
 				</TimerCard>
+				<TaskList />
 			</div>
 		</>
 	);
