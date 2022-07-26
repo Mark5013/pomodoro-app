@@ -1,9 +1,25 @@
 .task {
 	padding: 1.5em;
 	display: flex;
+	max-width: 100%;
 	flex-direction: row;
 	justify-content: space-between;
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	margin: 1em 0;
 	background-color: #f0ebe3;
+}
+
+.title {
+	font-size: 1.25em;
+	font-weight: 700;
+	margin-bottom: 0.25em;
+}
+
+.description {
+	line-height: 1.25;
+	word-wrap: break-word;
+}
+
+.content {
+	max-width: 350px;
 }

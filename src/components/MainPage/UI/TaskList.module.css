@@ -8,3 +8,9 @@
 	margin: 5em auto;
 	margin-bottom: 0;
 }
+
+.taskListTitle {
+	font-size: 2rem;
+	color: #f0ebe3;
+	margin-bottom: 0;
+}

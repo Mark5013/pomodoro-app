@@ -4,6 +4,7 @@ import { useState } from "react";
 import TaskItem from "./TaskItem";
 import Button from "../../Shared/UI/Button";
 import TaskForm from "./TaskForm";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function TaskList() {
 	let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
@@ -25,9 +26,24 @@ function TaskList() {
 		localStorage.setItem("tasks", JSON.stringify(tasks));
 	}
 
+	function handleOnDragEnd(result) {
+		// Handles user moving item out of bounds
+		if (!result.destination) {
+			return;
+		}
+		// Create copy of existing array
+		const tasks = Array.from(taskList);
+		// Find item that is being moved and remove it from array
+		const [reorderedTask] = tasks.splice(result.source.index, 1);
+		// Add item back into array, but at new location
+		tasks.splice(result.destination.index, 0, reorderedTask);
+		// Update taskList to new one
+		setTaskList(tasks);
+	}
+
 	return (
 		<div className={styles.listContainer}>
-			<h2>Tasks</h2>
+			<h2 className={styles.taskListTitle}>Tasks</h2>
 			<hr />
 			{showForm ? (
 				<TaskForm toggleForm={toggleForm} addTask={addTask} />
@@ -39,17 +55,27 @@ function TaskList() {
 					onClick={toggleForm}
 				/>
 			)}
-
-			<ul className={styles.list}>
-				{taskList.map((task) => (
-					<TaskItem
-						task={task}
-						key={task.id}
-						taskId={task.id}
-						editTaskList={setTaskList}
-					/>
-				))}
-			</ul>
+			<DragDropContext onDragEnd={handleOnDragEnd}>
+				<Droppable droppableId="tasks">
+					{(provided) => (
+						<ul
+							className={styles.list}
+							{...provided.droppableProps}
+							ref={provided.innerRef}>
+							{taskList.map((task, index) => (
+								<TaskItem
+									task={task}
+									key={task.id}
+									index={index}
+									taskId={task.id}
+									editTaskList={setTaskList}
+								/>
+							))}
+							{provided.placeholder}
+						</ul>
+					)}
+				</Droppable>
+			</DragDropContext>
 		</div>
 	);
 }

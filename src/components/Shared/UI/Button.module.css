@@ -24,7 +24,10 @@
 .addTaskButton {
 	width: 100%;
 	height: 4em;
-	border: dotted black 2px;
+	border: dotted #f0ebe3 2px;
+	font-size: 1.1em;
+	font-weight: 900;
+	color: #f0ebe3;
 }
 
 .taskFormButton {
