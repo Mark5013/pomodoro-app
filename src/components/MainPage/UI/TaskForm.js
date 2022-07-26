@@ -1,5 +1,4 @@
 import styles from "./TaskForm.module.css";
-import { v4 as uuidv4 } from "uuid";
 import Input from "../../Shared/UI/Input";
 import GeneralCard from "../../Shared/UI/GeneralCard";
 import Button from "../../Shared/UI/Button";
@@ -10,6 +9,8 @@ function TaskForm(props) {
 	const [descriptionText, setDescriptionText] = useState(
 		props.descriptionText || ""
 	);
+	console.log(titleText);
+	console.log(descriptionText);
 
 	function titleChangeHandler(event) {
 		setTitleText(event.target.value);
@@ -25,7 +26,6 @@ function TaskForm(props) {
 		props.addTask({
 			title: titleText,
 			description: descriptionText,
-			id: uuidv4(),
 		});
 		props.toggleForm();
 	}
@@ -37,9 +37,9 @@ function TaskForm(props) {
 					<Input
 						type="text"
 						id="title"
-						value={titleText}
 						onChange={titleChangeHandler}
-						placeholder={props.titleText ? null : "Title"}
+						placeholder={props.titleText ? undefined : "Title"}
+						value={titleText}
 					/>
 					<textarea
 						className={styles.description}
@@ -49,7 +49,7 @@ function TaskForm(props) {
 						onChange={descriptionChangeHandler}
 						placeholder={
 							props.descriptionText
-								? null
+								? ""
 								: "Description (optional)"
 						}
 					/>

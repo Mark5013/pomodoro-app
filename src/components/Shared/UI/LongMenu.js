@@ -24,6 +24,7 @@ export default function LongMenu(props) {
 		let tasks = JSON.parse(localStorage.getItem("tasks"));
 
 		if (action === "Edit") {
+			props.editTaskItem(props.taskId);
 		} else if (action === "Delete") {
 			// Remove task with specified task id
 			tasks = tasks.filter((task) => task.id !== taskId);

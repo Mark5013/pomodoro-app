@@ -1,9 +1,28 @@
 import styles from "./TaskItem.module.css";
 import LongMenu from "../../Shared/UI/LongMenu";
 import { Draggable } from "react-beautiful-dnd";
+import { useState } from "react";
+import TaskForm from "./TaskForm";
 
 function TaskItem(props) {
-	return (
+	const [editMode, setEditMode] = useState(false);
+
+	function handleEditMode() {
+		setEditMode((prev) => !prev);
+	}
+
+	function handleEdit(task) {
+		props.editTaskItem(task, props.taskId);
+	}
+
+	let content = editMode ? (
+		<TaskForm
+			titleText={props.task.title}
+			descriptionText={props.task.description}
+			toggleForm={handleEditMode}
+			addTask={handleEdit}
+		/>
+	) : (
 		<Draggable draggableId={props.taskId} index={props.index}>
 			{(provided) => (
 				<div
@@ -20,11 +39,14 @@ function TaskItem(props) {
 					<LongMenu
 						taskId={props.taskId}
 						editTaskList={props.editTaskList}
+						editTaskItem={handleEditMode}
 					/>
 				</div>
 			)}
 		</Draggable>
 	);
+
+	return content;
 }
 
 export default TaskItem;
