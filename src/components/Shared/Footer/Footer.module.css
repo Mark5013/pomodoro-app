@@ -1,0 +1,22 @@
+.footer {
+	display: flex;
+	padding: 5em;
+	background-color: #f0ebe3;
+	margin: 0;
+	justify-content: center;
+}
+
+.icon {
+	color: black;
+	font-size: 2em;
+	margin: 0 0.25em;
+	opacity: 0.3;
+	transform: scale(1);
+	transition: transform 250ms;
+}
+
+.icon:hover,
+.icon:focus {
+	transform: scale(1.2);
+	opacity: 0.9;
+}

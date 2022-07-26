@@ -6,4 +6,5 @@
 .listContainer {
 	width: 450px;
 	margin: 5em auto;
+	margin-bottom: 0;
 }

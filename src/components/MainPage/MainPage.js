@@ -6,6 +6,7 @@ import Header from "../Shared/Header/Header";
 import TimerCard from "./UI/TimerCard";
 import Button from "../Shared/UI/Button";
 import TaskList from "./UI/TaskList";
+import Footer from "../Shared/Footer/Footer";
 
 let interval;
 
@@ -58,7 +59,7 @@ function MainPage() {
 			timerLength -= 1000;
 			// if timerLength hits 0, clear the intervals
 			if (timerLength <= 0) {
-				if (counter == 3 && modeCtx.mode === "pomodoro") {
+				if (counter === 3 && modeCtx.mode === "pomodoro") {
 					setCounter(0);
 					setLongBreakMode();
 				} else if (modeCtx.mode === "pomodoro") {
@@ -106,19 +107,19 @@ function MainPage() {
 							text="Pomodoro"
 							type="button"
 							onClick={setPomodoroMode}
-							style="timerButton"
+							class="timerButton"
 						/>
 						<Button
 							text="Short Break"
 							type="button"
 							onClick={setShortBreakMode}
-							style="timerButton"
+							class="timerButton"
 						/>
 						<Button
 							text="Long Break"
 							type="button"
 							onClick={setLongBreakMode}
-							style="timerButton"
+							class="timerButton"
 						/>
 					</div>
 					<p className={styles.timerText}>
@@ -129,17 +130,18 @@ function MainPage() {
 							text="Start"
 							type="button"
 							onClick={startTimer}
-							style="timerButton"
+							class="timerButton"
 						/>
 						<Button
 							text="Pause"
 							type="button"
 							onClick={clearTimer}
-							style="timerButton"
+							class="timerButton"
 						/>
 					</div>
 				</TimerCard>
 				<TaskList />
+				<Footer />
 			</div>
 		</>
 	);

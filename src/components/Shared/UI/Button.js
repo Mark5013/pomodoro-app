@@ -4,7 +4,7 @@ function Button(props) {
 	return (
 		<button
 			onClick={props.onClick}
-			className={`${styles.btn} ${styles[props.style]}`}
+			className={`${styles.btn} ${styles[props.class]}`}
 			type={props.type}>
 			{props.text}
 		</button>

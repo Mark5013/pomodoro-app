@@ -5,22 +5,24 @@ import TaskItem from "./TaskItem";
 import Button from "../../Shared/UI/Button";
 import TaskForm from "./TaskForm";
 
-let DUMMY_TASKS = [
-	{ title: "Task One", description: "hiya", id: "1" },
-	{ title: "Task Two", description: "wowow", id: "2" },
-	{ title: "Task Three", description: "epic", id: "3" },
-	{ title: "Task Four", description: "COOOL", id: "4" },
-];
-
 function TaskList() {
+	let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
 	const [showForm, setShowForm] = useState(false);
+	const [taskList, setTaskList] = useState(tasks);
 
 	function toggleForm() {
 		setShowForm((prev) => !prev);
 	}
 
 	function addTask(task) {
-		DUMMY_TASKS.push(task);
+		tasks.push({
+			title: task.title,
+			description: task.description,
+			id: task.id,
+		});
+		setTaskList(tasks);
+		localStorage.setItem("tasks", JSON.stringify(tasks));
 	}
 
 	return (
@@ -33,14 +35,19 @@ function TaskList() {
 				<Button
 					type={"button"}
 					text={"Add a task"}
-					style={"addTaskButton"}
+					class={"addTaskButton"}
 					onClick={toggleForm}
 				/>
 			)}
 
 			<ul className={styles.list}>
-				{DUMMY_TASKS.map((task) => (
-					<TaskItem task={task} key={task.id} />
+				{taskList.map((task) => (
+					<TaskItem
+						task={task}
+						key={task.id}
+						taskId={task.id}
+						editTaskList={setTaskList}
+					/>
 				))}
 			</ul>
 		</div>
