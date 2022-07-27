@@ -9,8 +9,6 @@ function TaskForm(props) {
 	const [descriptionText, setDescriptionText] = useState(
 		props.descriptionText || ""
 	);
-	console.log(titleText);
-	console.log(descriptionText);
 
 	function titleChangeHandler(event) {
 		setTitleText(event.target.value);
@@ -23,6 +21,11 @@ function TaskForm(props) {
 	function submitTaskForm(event) {
 		event.preventDefault();
 		// TODO form validation checks
+		if (titleText.trim().length === 0) {
+			props.invalidInput("Title field is required to be filled out");
+			return;
+		}
+
 		props.addTask({
 			title: titleText,
 			description: descriptionText,
