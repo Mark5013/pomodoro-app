@@ -1,14 +1,46 @@
 .header {
-	width: 100%;
+	width: 700px;
+	margin: auto;
 	text-align: center;
+	align-items: baseline;
+	justify-content: space-between;
 	display: flex;
 	padding: 2em 0;
 }
 
 .title {
-	font-size: 3rem;
+	font-size: 2.5rem;
 	color: white;
 	font-weight: 700;
-	margin: 0 auto;
-	align-self: center;
+}
+
+.navButtons {
+	margin: auto 0;
+	width: 200px;
+	justify-content: space-between;
+	display: flex;
+}
+
+.navButton {
+	background: none;
+	text-decoration: none;
+	color: white;
+	cursor: pointer;
+	border: none;
+	padding: 0.8em 1.5em;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+	font-family: inherit;
+	border-radius: 2px;
+	height: 19px;
+	margin: auto 0;
+}
+
+.navButton:hover,
+.navButton:focus {
+	background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
+}
+
+.userPic {
+	border-radius: 50%;
+	height: 80px;
 }
