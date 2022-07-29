@@ -39,6 +39,7 @@ function TaskItem(props) {
 					<LongMenu
 						taskId={props.taskId}
 						editTaskList={props.editTaskList}
+						deleteTaskItem={props.deleteTaskItem}
 						editTaskItem={handleEditMode}
 					/>
 				</div>

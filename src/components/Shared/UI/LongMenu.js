@@ -19,18 +19,11 @@ export default function LongMenu(props) {
 		const action = event.nativeEvent.target.outerText;
 		// Task id if a task was clicked on
 		const taskId = props.taskId;
-		// Task list for the user
-		let tasks = JSON.parse(localStorage.getItem("tasks"));
 
 		if (action === "Edit") {
 			props.editTaskItem(props.taskId);
 		} else if (action === "Delete") {
-			// Remove task with specified task id
-			tasks = tasks.filter((task) => task.id !== taskId);
-			// Update array in local storage
-			localStorage.setItem("tasks", JSON.stringify(tasks));
-			// Set task list to new task list
-			props.editTaskList(tasks);
+			props.deleteTaskItem(props.taskId);
 		}
 
 		setAnchorEl(null);
