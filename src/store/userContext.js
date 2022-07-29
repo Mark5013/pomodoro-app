@@ -1,10 +1,7 @@
 import { useState, createContext } from "react";
 
 const UserContext = createContext({
-	name: "",
-	picture: "",
-	refreshToken: "",
-	isLoggedIn: false,
+	user: { name: "", picture: "", userId: "", isLoggedIn: false },
 	login: (name, picture, refreshToken) => {},
 	logout: () => {},
 });

@@ -1,6 +1,7 @@
 import styles from "./MainPage.module.css";
 import { useContext, useState } from "react";
 import ModeContext from "../../store/modeContext";
+import UserContext from "../../store/userContext";
 
 import Header from "../Shared/Header/Header";
 import TimerCard from "./UI/TimerCard";
@@ -13,8 +14,34 @@ let interval;
 function MainPage() {
 	const [minutes, setMinutes] = useState("25");
 	const [seconds, setSeconds] = useState("00");
+	const [timeElapsed, setTimeElapsed] = useState(0);
 	const [counter, setCounter] = useState(0);
 	const modeCtx = useContext(ModeContext);
+	const userCtx = useContext(UserContext);
+	console.log(timeElapsed);
+
+	async function updateMinutes(dateStr, secondsPassed) {
+		let response;
+		try {
+			response = await fetch(
+				"http://localhost:5000/stats/updateMinutes",
+				{
+					method: "POST",
+					headers: {
+						"Content-type": "application/json",
+					},
+					body: JSON.stringify({
+						dateStr,
+						secondsPassed,
+						userId: userCtx.user.userId,
+					}),
+				}
+			);
+		} catch (err) {
+			console.log(err);
+		}
+		console.log(response);
+	}
 
 	// sets app UI and logic to pomodoro mode
 	function setPomodoroMode() {
@@ -29,6 +56,10 @@ function MainPage() {
 	function setShortBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
+		if (userCtx.user.isLoggedIn && timeElapsed > 0) {
+			updateMinutes(new Date().toDateString(), timeElapsed);
+			setTimeElapsed(0);
+		}
 		modeCtx.switchMode("shortBreak");
 		setMinutes("05");
 		setSeconds("00");
@@ -38,6 +69,10 @@ function MainPage() {
 	function setLongBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
+		if (userCtx.user.isLoggedIn && timeElapsed > 0) {
+			updateMinutes(new Date().toDateString(), timeElapsed);
+			setTimeElapsed(0);
+		}
 		modeCtx.switchMode("longBreak");
 		setMinutes("15");
 		setSeconds("00");
@@ -57,6 +92,9 @@ function MainPage() {
 		interval = setInterval(() => {
 			// decrement timer length by 1 second every second
 			timerLength -= 1000;
+			if (userCtx.user.isLoggedIn && modeCtx.mode === "pomodoro") {
+				setTimeElapsed((prev) => prev + 1);
+			}
 			// if timerLength hits 0, clear the intervals
 			if (timerLength <= 0) {
 				if (counter === 3 && modeCtx.mode === "pomodoro") {
@@ -70,6 +108,7 @@ function MainPage() {
 				} else {
 					setPomodoroMode();
 				}
+				setTimeElapsed(0);
 				clearTimer();
 			} else {
 				setMinutes(
