@@ -8,8 +8,13 @@ function useTimer() {
 	const [seconds, setSeconds] = useState("00");
 	const [timeElapsed, setTimeElapsed] = useState(0);
 	const [counter, setCounter] = useState(0);
+	const [hasError, setHasError] = useState(false);
 	const userCtx = useContext(UserContext);
 	const modeCtx = useContext(ModeContext);
+
+	function toggleError() {
+		setHasError((prev) => !prev);
+	}
 
 	async function updateMinutes(dateStr, secondsPassed) {
 		let response;
@@ -30,6 +35,7 @@ function useTimer() {
 			);
 		} catch (err) {
 			console.log(err);
+			toggleError();
 		}
 		console.log(response);
 	}
@@ -121,13 +127,13 @@ function useTimer() {
 	return {
 		minutes,
 		seconds,
-		timeElapsed,
-		counter,
+		hasError,
 		setPomodoroMode,
 		setShortBreakMode,
 		setLongBreakMode,
 		clearTimer,
 		startTimer,
+		toggleError,
 	};
 }
 

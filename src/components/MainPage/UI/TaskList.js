@@ -21,16 +21,28 @@ function TaskList() {
 	useEffect(() => {
 		if (userCtx.user.isLoggedIn) {
 			async function getUserTasks() {
-				const response = await fetch(
-					`http://localhost:5000/tasks/${userCtx.user.userId}`,
-					{
-						headers: {
-							"Content-type": "application/json",
-						},
-					}
-				);
+				let response;
+				let userTasks;
+				// try to fetch users tasks
+				try {
+					response = await fetch(
+						`http://localhost:5000/tasks/${userCtx.user.userId}`,
+						{
+							headers: {
+								"Content-type": "application/json",
+							},
+						}
+					);
 
-				const userTasks = await response.json();
+					// take reponse and parse it into object
+					userTasks = await response.json();
+				} catch (err) {
+					// if there is an error, set task list to empty and notify user
+					console.log(err);
+					setTaskList([]);
+					toggleErrorModal("Failed to fetch tasks!");
+				}
+
 				if (userTasks.tasks) {
 					setTaskList(userTasks.tasks);
 				} else {
@@ -40,6 +52,7 @@ function TaskList() {
 
 			getUserTasks();
 		} else {
+			// if user isn't logged in, use local storage
 			setTaskList(JSON.parse(localStorage.getItem("tasks") || "[]"));
 		}
 	}, []);
@@ -48,16 +61,28 @@ function TaskList() {
 	useEffect(() => {
 		if (userCtx.user.isLoggedIn) {
 			async function getUserTasks() {
-				const response = await fetch(
-					`http://localhost:5000/tasks/${userCtx.user.userId}`,
-					{
-						headers: {
-							"Content-type": "application/json",
-						},
-					}
-				);
+				let response;
+				let userTasks;
+				// try to fetch users tasks
+				try {
+					response = await fetch(
+						`http://localhost:5000/tasks/${userCtx.user.userId}`,
+						{
+							headers: {
+								"Content-type": "application/json",
+							},
+						}
+					);
 
-				const userTasks = await response.json();
+					// read response and parse it into object
+					userTasks = await response.json();
+				} catch (err) {
+					// if there is an error set task list to empty and notify user
+					console.log(err);
+					setTaskList([]);
+					toggleErrorModal("Failed to fetch tasks!");
+				}
+
 				if (userTasks.tasks) {
 					setTaskList(userTasks.tasks);
 				} else {
@@ -71,10 +96,12 @@ function TaskList() {
 		}
 	}, [userCtx.user.isLoggedIn]);
 
+	// toggles the form
 	function toggleForm() {
 		setShowForm((prev) => !prev);
 	}
 
+	// toggles the error modal and allows you to set error modal text
 	function toggleErrorModal(errorText) {
 		if (errorText.length === 0) {
 			setErrorModalText("");
@@ -95,27 +122,36 @@ function TaskList() {
 		}
 
 		if (userCtx.user.isLoggedIn) {
-			// post req to backend to fetch users tasks
-			const response = await fetch(
-				"http://localhost:5000/tasks/addTask",
-				{
+			let response;
+			let newTaskObj;
+			let newTask;
+			try {
+				// post req to backend to fetch users tasks
+				response = await fetch("http://localhost:5000/tasks/addTask", {
 					method: "POST",
 					headers: {
 						"Content-type": "application/json",
 					},
 					body: JSON.stringify({ task, userId: userCtx.user.userId }),
-				}
-			);
+				});
 
-			// backend sends back the newly created task
-			const newTaskObj = await response.json();
-			const newTask = newTaskObj.createdTask;
-			// add task to arr
-			let updatedList = taskList;
-			updatedList.push(newTask);
-			// use spread operator into new array to trigger page re-render
-			setTaskList([...updatedList]);
+				// backend sends back the newly created task
+				newTaskObj = await response.json();
+				newTask = newTaskObj.createdTask;
+			} catch (err) {
+				toggleErrorModal("Failed to create task");
+			}
+
+			// only push to task list if there is a new task
+			if (newTask) {
+				// add task to arr
+				let updatedList = taskList;
+				updatedList.push(newTask);
+				// use spread operator into new array to trigger page re-render
+				setTaskList([...updatedList]);
+			}
 		} else {
+			// use local storage is user isn't logged in
 			let currentTaskList = JSON.parse(
 				localStorage.getItem("tasks"),
 				"[]"
@@ -133,10 +169,13 @@ function TaskList() {
 
 	async function editTaskItem(updatedTask, taskId) {
 		if (userCtx.user.isLoggedIn) {
+			let response;
+			let updatedTaskObj;
+			let editedTask;
+
 			// patch req to back end
-			const response = await fetch(
-				"http://localhost:5000/tasks/editTask",
-				{
+			try {
+				response = await fetch("http://localhost:5000/tasks/editTask", {
 					method: "PATCH",
 					headers: {
 						"Content-type": "application/json",
@@ -146,18 +185,25 @@ function TaskList() {
 						taskId,
 						userId: userCtx.user.userId,
 					}),
-				}
-			);
+				});
 
-			const updatedTaskObj = await response.json();
-			const editedTask = updatedTaskObj.updatedTask;
+				// parse reponse and get the newly edited task
+				updatedTaskObj = await response.json();
+				editedTask = updatedTaskObj.updatedTask;
+			} catch (err) {
+				toggleErrorModal("Failed to edit the task, try again later!");
+			}
 
-			let curList = taskList;
-			let foundTask = curList.find((task) => task.id === taskId);
-			foundTask.title = editedTask.title;
-			foundTask.description = editedTask.description;
+			// if edited task exists, find the old task in the list and update it
+			if (editedTask) {
+				let curList = taskList;
+				let foundTask = curList.find((task) => task.id === taskId);
+				foundTask.title = editedTask.title;
+				foundTask.description = editedTask.description;
 
-			setTaskList([...curList]);
+				// use spread operator so the page re-renders
+				setTaskList([...curList]);
+			}
 		} else {
 			// Fetch tasks from localstorage
 			let fetchedTasks = JSON.parse(
@@ -178,17 +224,24 @@ function TaskList() {
 
 	async function deleteTask(taskId) {
 		if (userCtx.user.isLoggedIn) {
-			const response = await fetch(
-				`http://localhost:5000/tasks/deleteTask/${userCtx.user.userId}/${taskId}`,
-				{
-					method: "DELETE",
-					headers: {
-						"Content-type": "application/json",
-					},
-				}
-			);
+			let response;
+			// send delete request to backend
+			try {
+				response = await fetch(
+					`http://localhost:5000/tasks/deleteTask/${userCtx.user.userId}/${taskId}`,
+					{
+						method: "DELETE",
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
+			} catch (err) {
+				// if error, toggle the error modal
+				toggleErrorModal("Failed to delete task, try again later!");
+			}
 
-			console.log(response);
+			// if response is ok, find task in current list and delete it, and re render page
 			if (response.ok) {
 				let curList = taskList;
 				curList = curList.filter((task) => task.id !== taskId);

@@ -8,21 +8,30 @@ import TimerCard from "./UI/TimerCard";
 import Button from "../Shared/UI/Button";
 import TaskList from "./UI/TaskList";
 import Footer from "../Shared/Footer/Footer";
+import ErrorModal from "../Shared/UI/ErrorModal";
 
 function MainPage() {
 	const modeCtx = useContext(ModeContext);
 	const {
 		minutes,
 		seconds,
+		hasError,
 		setPomodoroMode,
 		setShortBreakMode,
 		setLongBreakMode,
 		clearTimer,
 		startTimer,
+		toggleError,
 	} = useTimer();
 
 	return (
 		<>
+			{hasError && (
+				<ErrorModal
+					closeErrorModal={toggleError}
+					errorText="Failed to save user data"
+				/>
+			)}
 			<div
 				className={`${styles.background} ${
 					modeCtx.mode === "pomodoro"
