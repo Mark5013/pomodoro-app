@@ -247,6 +247,9 @@ function TaskList() {
 				curList = curList.filter((task) => task.id !== taskId);
 
 				setTaskList([...curList]);
+			} else {
+				// if error, toggle the error modal
+				toggleErrorModal("Failed to delete task, try again later!");
 			}
 		} else {
 			// Task list for the user
