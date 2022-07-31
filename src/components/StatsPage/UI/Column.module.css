@@ -1,0 +1,15 @@
+.bar {
+	border: 1px solid black;
+	display: flex;
+	align-items: flex-end;
+	height: 500px;
+}
+
+.height {
+	width: 100px;
+	background-color: red;
+}
+
+.col {
+	text-align: center;
+}

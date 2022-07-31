@@ -54,7 +54,7 @@ function useTimer() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
 		if (userCtx.user.isLoggedIn && timeElapsed > 0) {
-			updateMinutes(new Date().toDateString(), timeElapsed);
+			updateMinutes(new Date().toISOString().split("T")[0], timeElapsed);
 			setTimeElapsed(0);
 		}
 		modeCtx.switchMode("shortBreak");
@@ -67,7 +67,7 @@ function useTimer() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
 		if (userCtx.user.isLoggedIn && timeElapsed > 0) {
-			updateMinutes(new Date().toDateString(), timeElapsed);
+			updateMinutes(new Date().toISOString().split("T")[0], timeElapsed);
 			setTimeElapsed(0);
 		}
 		modeCtx.switchMode("longBreak");

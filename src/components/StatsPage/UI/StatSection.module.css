@@ -1,0 +1,6 @@
+.gridSection {
+	display: flex;
+	justify-content: space-between;
+	width: 800px;
+	margin: 1em auto;
+}
