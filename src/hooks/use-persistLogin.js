@@ -10,7 +10,11 @@ function usePersistLogin() {
 		// get new access token by using the refresh token
 		try {
 			response = await fetch("http://localhost:5000/login/refreshToken", {
+				method: "POST",
 				credentials: "include",
+				headers: {
+					"Content-type": "application/json",
+				},
 			});
 
 			if (response.ok) {

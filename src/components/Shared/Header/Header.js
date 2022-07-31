@@ -1,11 +1,11 @@
 import styles from "./Header.module.css";
-import { NavLink } from "react-router-dom";
-import { useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import Button from "../UI/Button";
 import UserContext from "../../../store/userContext";
 import { useContext, useEffect, useState } from "react";
 import usePersistLogin from "../../../hooks/use-persistLogin";
 import ErrorModal from "../UI/ErrorModal";
+import ProfileMenu from "../UI/ProfileMenu";
 
 function Header() {
 	const userCtx = useContext(UserContext);
@@ -15,6 +15,21 @@ function Header() {
 	function toggleErrorModal() {
 		setShowErrorModal((prev) => !prev);
 	}
+
+	const logout = async () => {
+		const response = await fetch("http://localhost:5000/logout", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+		if (response.ok) {
+			userCtx.logout();
+		} else {
+			console.log("failed to logout");
+		}
+	};
 
 	const login = useGoogleLogin({
 		onSuccess: async (codeResponse) => {
@@ -110,9 +125,6 @@ function Header() {
 			<div className={`${styles.header}`}>
 				<h1 className={styles.title}>Pomodoro Timer</h1>
 				<div className={styles.navButtons}>
-					<NavLink to="stats" className={styles.navButton}>
-						Stats
-					</NavLink>
 					{!userCtx.user.isLoggedIn && (
 						<Button
 							onClick={() => login()}
@@ -122,10 +134,9 @@ function Header() {
 						/>
 					)}
 					{userCtx.user.isLoggedIn && (
-						<img
-							className={styles.userPic}
+						<ProfileMenu
 							src={`${userCtx.user.picture}`}
-							alt="user profile pic"
+							logout={logout}
 						/>
 					)}
 				</div>

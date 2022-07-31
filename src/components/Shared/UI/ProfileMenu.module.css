@@ -1,0 +1,9 @@
+.profilePicture {
+	border-radius: 50%;
+	height: 85px;
+}
+
+.menuBtn {
+	text-decoration: none;
+	color: black;
+}
