@@ -35,7 +35,7 @@ function Column(props) {
 			<div className={styles.bar}>
 				<div
 					className={styles.height}
-					style={{ height: `${minutes}px` }}></div>
+					style={{ height: `${minutes * 2.88}px` }}></div>
 			</div>
 			<p>{minutes.toFixed(2)} min</p>
 			<p>{props.curDate}</p>

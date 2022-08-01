@@ -1,4 +1,5 @@
 .bar {
+	border-radius: 10px;
 	border: 1px solid black;
 	display: flex;
 	align-items: flex-end;
@@ -6,8 +7,9 @@
 }
 
 .height {
-	width: 100px;
-	background-color: red;
+	border-radius: 10px;
+	width: 100%;
+	background-color: #00adb5;
 }
 
 .col {
