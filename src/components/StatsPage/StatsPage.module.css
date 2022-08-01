@@ -7,12 +7,3 @@
 .headerBackground {
 	background-color: #393e46;
 }
-
-.statSection {
-	border-radius: 5px;
-	padding: 1em;
-	max-width: 1110px;
-	min-width: 800px;
-	margin: 1em auto;
-	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}

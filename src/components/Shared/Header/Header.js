@@ -1,13 +1,15 @@
 import styles from "./Header.module.css";
 import { useGoogleLogin } from "@react-oauth/google";
-import Button from "../UI/Button";
 import UserContext from "../../../store/userContext";
 import { useContext, useEffect, useState } from "react";
 import usePersistLogin from "../../../hooks/use-persistLogin";
 import ErrorModal from "../UI/ErrorModal";
 import ProfileMenu from "../UI/ProfileMenu";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 function Header() {
+	const navigate = useNavigate();
 	const userCtx = useContext(UserContext);
 	const [showErrorModal, setShowErrorModal] = useState(false);
 	const { persistLogin } = usePersistLogin();
@@ -26,6 +28,7 @@ function Header() {
 		});
 		if (response.ok) {
 			userCtx.logout();
+			navigate("/", { replace: true });
 		} else {
 			console.log("failed to logout");
 		}
@@ -111,7 +114,9 @@ function Header() {
 	});
 
 	useEffect(() => {
-		persistLogin();
+		if (!userCtx.user.isLoggedIn) {
+			persistLogin();
+		}
 	}, []);
 
 	return (
@@ -123,15 +128,21 @@ function Header() {
 				/>
 			)}
 			<div className={`${styles.header}`}>
-				<h1 className={styles.title}>Pomodoro Timer</h1>
+				<Link to="/" className={styles.title}>
+					<h1 className={styles.title}>Pomodoro Timer</h1>
+				</Link>
 				<div className={styles.navButtons}>
 					{!userCtx.user.isLoggedIn && (
 						<Button
-							onClick={() => login()}
-							text="Login"
-							type="button"
-							class="navButton"
-						/>
+							onClick={login}
+							variant="contained"
+							color="inherit"
+							size="large"
+							sx={{
+								textTransform: "capitalize",
+							}}>
+							Log in
+						</Button>
 					)}
 					{userCtx.user.isLoggedIn && (
 						<ProfileMenu

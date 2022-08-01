@@ -1,11 +1,11 @@
 import styles from "./StatSection.module.css";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import UserContext from "../../../store/userContext";
 import Column from "./Column";
 import { v4 as uuidv4 } from "uuid";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { IconButton } from "@mui/material";
+import { IconButton, CircularProgress } from "@mui/material";
 
 function StatSection() {
 	const userCtx = useContext(UserContext);
@@ -14,8 +14,7 @@ function StatSection() {
 	const [monthlyTime, setMonthlyTime] = useState(0);
 	const [yearlyTime, setYearlyTime] = useState(0);
 	const [weeklyTime, setWeeklyTime] = useState(0);
-
-	console.log("reredner");
+	const [fetchingData, setFetchingData] = useState(false);
 
 	function toIsoString(date) {
 		var tzo = -date.getTimezoneOffset(),
@@ -43,7 +42,7 @@ function StatSection() {
 		);
 	}
 
-	function getFullWeek() {
+	const getFullWeek = useCallback(() => {
 		const curWeek = [];
 		for (let i = currentDate.getDay(); i >= 0; i--) {
 			let day = new Date(currentDate);
@@ -57,7 +56,7 @@ function StatSection() {
 			curWeek.push(toIsoString(day).split("T")[0]);
 		}
 		setDaysOfWeek([...curWeek]);
-	}
+	}, [currentDate]);
 
 	function nextWeek() {
 		let newDate = new Date(currentDate);
@@ -72,114 +71,111 @@ function StatSection() {
 	}
 
 	useEffect(() => {
-		getFullWeek();
-	}, [currentDate]);
+		setFetchingData(true);
+		async function getUserTime(user) {
+			let monthResponse;
+			let monthTime;
+			let yearResponse;
+			let yearTime;
 
-	useEffect(() => {
-		async function getMonthlyTime() {
-			console.log(currentDate.getMonth() + 1);
-			const response = await fetch(
-				`http://localhost:5000/stats/getMonthsMinutes/${
-					userCtx.user.userId
-				}/${currentDate.getMonth() + 1}`,
-				{
-					headers: {
-						"Content-type": "application/json",
-					},
-				}
-			);
+			try {
+				monthResponse = await fetch(
+					`http://localhost:5000/stats/getMonthsMinutes/${
+						user.userId
+					}/${currentDate.getMonth() + 1}`,
+					{
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
 
-			const monthlyTime = await response.json();
-			setMonthlyTime(monthlyTime.monthlyTime);
+				monthTime = await monthResponse.json();
+			} catch (err) {}
+
+			try {
+				yearResponse = await fetch(
+					`http://localhost:5000/stats/getYearsMinutes/${
+						user.userId
+					}/${currentDate.getYear() + 1900}`,
+					{
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
+
+				yearTime = await yearResponse.json();
+			} catch (err) {}
+
+			setMonthlyTime(monthTime.monthlyTime);
+			setYearlyTime(yearTime.yearlyTime);
+			setFetchingData(false);
 		}
+
 		if (userCtx.user.isLoggedIn) {
-			getMonthlyTime();
+			getFullWeek();
+			getUserTime(userCtx.user);
 		}
-	}, [userCtx.user.isLoggedIn]);
-
-	useEffect(() => {
-		async function getMonthlyTime() {
-			const response = await fetch(
-				`http://localhost:5000/stats/getMonthsMinutes/${
-					userCtx.user.userId
-				}/${currentDate.getMonth() + 1}`,
-				{
-					headers: {
-						"Content-type": "application/json",
-					},
-				}
-			);
-
-			const monthlyTime = await response.json();
-			setMonthlyTime(monthlyTime.monthlyTime);
-		}
-		getMonthlyTime();
-	}, [currentDate]);
-
-	useEffect(() => {
-		async function getYearlyTime() {
-			const response = await fetch(
-				`http://localhost:5000/stats/getYearsMinutes/${
-					userCtx.user.userId
-				}/${currentDate.getYear() + 1900}`,
-				{
-					headers: {
-						"Content-type": "application/json",
-					},
-				}
-			);
-
-			const yearlyTime = await response.json();
-			setYearlyTime(yearlyTime.yearlyTime);
-		}
-		if (userCtx.user.isLoggedIn) {
-			getYearlyTime();
-		}
-	}, [userCtx.user.isLoggedIn]);
-
-	useEffect(() => {
-		async function getYearlyTime() {
-			const response = await fetch(
-				`http://localhost:5000/stats/getYearsMinutes/${
-					userCtx.user.userId
-				}/${currentDate.getYear() + 1900}`,
-				{
-					headers: {
-						"Content-type": "application/json",
-					},
-				}
-			);
-
-			const yearlyTime = await response.json();
-			setYearlyTime(yearlyTime.yearlyTime);
-		}
-		getYearlyTime();
-	}, [currentDate]);
+	}, [currentDate, userCtx.user, getFullWeek]);
 
 	return (
 		<>
-			<div className={styles.statSection}>
-				<IconButton onClick={prevWeek}>
-					<NavigateBeforeIcon />
-				</IconButton>
-				<div className={styles.gridSection}>
-					{daysOfWeek.map((date) => (
-						<Column
-							curDate={date}
-							key={uuidv4()}
-							updateWeeklyTime={setWeeklyTime}
-						/>
-					))}
+			{userCtx.user.isLoggedIn ? (
+				<div className={styles.entireStatSection}>
+					<div className={styles.statSection}>
+						{fetchingData ? (
+							<div className={styles.gridSectionFallBack}>
+								<CircularProgress
+									color="inherit"
+									className={styles.loader}
+								/>
+							</div>
+						) : (
+							<>
+								<IconButton onClick={prevWeek}>
+									<NavigateBeforeIcon />
+								</IconButton>
+								<div className={styles.gridSection}>
+									{daysOfWeek.map((date) => (
+										<Column
+											curDate={date}
+											key={uuidv4()}
+											updateWeeklyTime={setWeeklyTime}
+										/>
+									))}
+								</div>
+								<IconButton onClick={nextWeek}>
+									<NavigateNextIcon />
+								</IconButton>
+							</>
+						)}
+					</div>
+					{!fetchingData && (
+						<div>
+							<p>
+								Total time this week: {weeklyTime.toFixed(2)}{" "}
+								minutes
+							</p>
+							<p>
+								Total time this month: {monthlyTime.toFixed(2)}{" "}
+								minutes
+							</p>
+							<p>
+								Total time this year: {yearlyTime.toFixed(2)}{" "}
+								minutes
+							</p>
+						</div>
+					)}
 				</div>
-				<IconButton onClick={nextWeek}>
-					<NavigateNextIcon />
-				</IconButton>
-			</div>
-			<div>
-				<p>Total time this week: {weeklyTime.toFixed(2)} minutes</p>
-				<p>Total time this month: {monthlyTime.toFixed(2)} minutes</p>
-				<p>Total time this year: {yearlyTime.toFixed(2)} minutes</p>
-			</div>
+			) : (
+				<div className={styles.entireStatSection}>
+					<CircularProgress
+						color="inherit"
+						className={styles.loader}
+					/>
+				</div>
+			)}
 		</>
 	);
 }

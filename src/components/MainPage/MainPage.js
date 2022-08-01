@@ -5,7 +5,7 @@ import useTimer from "../../hooks/use-timer";
 
 import Header from "../Shared/Header/Header";
 import TimerCard from "./UI/TimerCard";
-import Button from "../Shared/UI/Button";
+import { Button } from "@mui/material";
 import TaskList from "./UI/TaskList";
 import Footer from "../Shared/Footer/Footer";
 import ErrorModal from "../Shared/UI/ErrorModal";
@@ -46,40 +46,50 @@ function MainPage() {
 				<TimerCard mode={modeCtx.mode}>
 					<div className={styles.timerButtons}>
 						<Button
-							text="Pomodoro"
-							type="button"
+							variant="contained"
+							color="inherit"
 							onClick={setPomodoroMode}
-							class="timerButton"
-						/>
+							size="large"
+							sx={{ textTransform: "capitalize" }}>
+							Pomodoro
+						</Button>
 						<Button
-							text="Short Break"
-							type="button"
+							variant="contained"
+							color="inherit"
 							onClick={setShortBreakMode}
-							class="timerButton"
-						/>
+							size="large"
+							sx={{ textTransform: "capitalize" }}>
+							Short Break
+						</Button>
 						<Button
-							text="Long Break"
-							type="button"
+							variant="contained"
+							color="inherit"
 							onClick={setLongBreakMode}
-							class="timerButton"
-						/>
+							size="large"
+							sx={{ textTransform: "capitalize" }}>
+							Long Break
+						</Button>
 					</div>
 					<p className={styles.timerText}>
 						{minutes}:{seconds}
 					</p>
 					<div className={styles.bottomButtons}>
 						<Button
-							text="Start"
-							type="button"
+							variant="contained"
+							color="inherit"
 							onClick={startTimer}
-							class="timerButton"
-						/>
+							size="large"
+							sx={{ textTransform: "capitalize" }}>
+							Start
+						</Button>
 						<Button
-							text="Pause"
-							type="button"
+							variant="contained"
+							color="inherit"
 							onClick={clearTimer}
-							class="timerButton"
-						/>
+							size="large"
+							sx={{ textTransform: "capitalize" }}>
+							Pause
+						</Button>
 					</div>
 				</TimerCard>
 				<TaskList />
