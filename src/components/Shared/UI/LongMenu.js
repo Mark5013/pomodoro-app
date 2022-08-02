@@ -17,8 +17,6 @@ export default function LongMenu(props) {
 	const handleClose = (event) => {
 		// Edit or Delete button clicked, or null value if menu is clicked off of
 		const action = event.nativeEvent.target.outerText;
-		// Task id if a task was clicked on
-		const taskId = props.taskId;
 
 		if (action === "Edit") {
 			props.editTaskItem(props.taskId);

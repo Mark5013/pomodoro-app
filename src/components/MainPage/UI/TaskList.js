@@ -17,47 +17,6 @@ function TaskList() {
 	const [showErrorModal, setShowErrorModal] = useState(false);
 	const [errorModalText, setErrorModalText] = useState("");
 
-	// WILL HANDLE USER FIRST LOADING WEBSITE
-	useEffect(() => {
-		if (userCtx.user.isLoggedIn) {
-			async function getUserTasks() {
-				let response;
-				let userTasks;
-				// try to fetch users tasks
-				try {
-					response = await fetch(
-						`http://localhost:5000/tasks/${userCtx.user.userId}`,
-						{
-							headers: {
-								"Content-type": "application/json",
-							},
-						}
-					);
-
-					// take reponse and parse it into object
-					userTasks = await response.json();
-				} catch (err) {
-					// if there is an error, set task list to empty and notify user
-					console.log(err);
-					setTaskList([]);
-					toggleErrorModal("Failed to fetch tasks!");
-				}
-
-				if (userTasks.tasks) {
-					setTaskList(userTasks.tasks);
-				} else {
-					// handle error
-				}
-			}
-
-			getUserTasks();
-		} else {
-			// if user isn't logged in, use local storage
-			setTaskList(JSON.parse(localStorage.getItem("tasks") || "[]"));
-		}
-	}, []);
-
-	// WILL HANDLE USER LOGGING IN/ LOGGING OUT
 	useEffect(() => {
 		if (userCtx.user.isLoggedIn) {
 			async function getUserTasks() {
@@ -94,7 +53,7 @@ function TaskList() {
 		} else {
 			setTaskList(JSON.parse(localStorage.getItem("tasks") || "[]"));
 		}
-	}, [userCtx.user.isLoggedIn]);
+	}, [userCtx.user.isLoggedIn, userCtx.user.userId]);
 
 	// toggles the form
 	function toggleForm() {

@@ -1,10 +1,10 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import UserContext from "../store/userContext";
 
 function usePersistLogin() {
 	const userCtx = useContext(UserContext);
 
-	async function persistLogin() {
+	const persistLogin = useCallback(async () => {
 		let response;
 		let token;
 		// get new access token by using the refresh token
@@ -78,7 +78,7 @@ function usePersistLogin() {
 		} else {
 			console.log(user);
 		}
-	}
+	}, [userCtx]);
 
 	return { persistLogin };
 }

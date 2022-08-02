@@ -113,11 +113,12 @@ function Header() {
 		flow: "auth-code",
 	});
 
+	// persists user login across refreshes
 	useEffect(() => {
 		if (!userCtx.user.isLoggedIn) {
 			persistLogin();
 		}
-	}, []);
+	}, [userCtx.user.isLoggedIn, persistLogin]);
 
 	return (
 		<>
@@ -140,6 +141,7 @@ function Header() {
 							size="large"
 							sx={{
 								textTransform: "capitalize",
+								fontFamily: "inherit",
 							}}>
 							Log in
 						</Button>

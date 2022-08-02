@@ -1,77 +1,38 @@
 import styles from "./StatSection.module.css";
-import { useEffect, useState, useContext, useCallback } from "react";
+import { useEffect, useState, useContext } from "react";
 import UserContext from "../../../store/userContext";
-import Column from "./Column";
-import { v4 as uuidv4 } from "uuid";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { IconButton, CircularProgress } from "@mui/material";
+import useWeek from "../../../hooks/use-week";
+import SubStatSection from "./SubStatSection";
+import { Skeleton, Stack } from "@mui/material";
+import {
+	BarChart,
+	Bar,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	Tooltip,
+	Legend,
+	ResponsiveContainer,
+} from "recharts";
 
 function StatSection() {
 	const userCtx = useContext(UserContext);
-	const [currentDate, setCurrentDate] = useState(new Date());
-	const [daysOfWeek, setDaysOfWeek] = useState([]);
 	const [monthlyTime, setMonthlyTime] = useState(0);
 	const [yearlyTime, setYearlyTime] = useState(0);
 	const [weeklyTime, setWeeklyTime] = useState(0);
-	const [fetchingData, setFetchingData] = useState(false);
-
-	function toIsoString(date) {
-		var tzo = -date.getTimezoneOffset(),
-			dif = tzo >= 0 ? "+" : "-",
-			pad = function (num) {
-				return (num < 10 ? "0" : "") + num;
-			};
-
-		return (
-			date.getFullYear() +
-			"-" +
-			pad(date.getMonth() + 1) +
-			"-" +
-			pad(date.getDate()) +
-			"T" +
-			pad(date.getHours()) +
-			":" +
-			pad(date.getMinutes()) +
-			":" +
-			pad(date.getSeconds()) +
-			dif +
-			pad(Math.floor(Math.abs(tzo) / 60)) +
-			":" +
-			pad(Math.abs(tzo) % 60)
-		);
-	}
-
-	const getFullWeek = useCallback(() => {
-		const curWeek = [];
-		for (let i = currentDate.getDay(); i >= 0; i--) {
-			let day = new Date(currentDate);
-			day.setDate(day.getDate() - i);
-			curWeek.push(toIsoString(day).split("T")[0]);
-		}
-
-		for (let i = 1; i <= 6 - currentDate.getDay(); ++i) {
-			let day = new Date(currentDate);
-			day.setDate(day.getDate() + i);
-			curWeek.push(toIsoString(day).split("T")[0]);
-		}
-		setDaysOfWeek([...curWeek]);
-	}, [currentDate]);
-
-	function nextWeek() {
-		let newDate = new Date(currentDate);
-		newDate.setDate(newDate.getDate() + 7);
-		setCurrentDate(newDate);
-	}
-
-	function prevWeek() {
-		let newDate = new Date(currentDate);
-		newDate.setDate(newDate.getDate() - 7);
-		setCurrentDate(newDate);
-	}
+	const {
+		currentDate,
+		daysOfWeek,
+		getFullWeek,
+		nextWeek,
+		prevWeek,
+		fetchingData,
+	} = useWeek();
 
 	useEffect(() => {
-		setFetchingData(true);
 		async function getUserTime(user) {
 			let monthResponse;
 			let monthTime;
@@ -91,7 +52,9 @@ function StatSection() {
 				);
 
 				monthTime = await monthResponse.json();
-			} catch (err) {}
+			} catch (err) {
+				setMonthlyTime(0);
+			}
 
 			try {
 				yearResponse = await fetch(
@@ -106,76 +69,112 @@ function StatSection() {
 				);
 
 				yearTime = await yearResponse.json();
-			} catch (err) {}
+			} catch (err) {
+				setYearlyTime(0);
+			}
 
-			setMonthlyTime(monthTime.monthlyTime);
-			setYearlyTime(yearTime.yearlyTime);
-			setFetchingData(false);
+			setWeeklyTime(
+				Math.floor(daysOfWeek.reduce((acc, e) => acc + e.minutes, 0))
+			);
+			setMonthlyTime(Math.floor(monthTime.monthlyTime) || 0);
+			setYearlyTime(Math.floor(yearTime.yearlyTime) || 0);
 		}
 
 		if (userCtx.user.isLoggedIn) {
-			getFullWeek();
+			getFullWeek(userCtx.user);
 			getUserTime(userCtx.user);
 		}
 	}, [currentDate, userCtx.user, getFullWeek]);
 
 	return (
 		<>
-			{userCtx.user.isLoggedIn ? (
-				<div className={styles.entireStatSection}>
-					<div className={styles.statSection}>
-						{fetchingData ? (
-							<div className={styles.gridSectionFallBack}>
-								<CircularProgress
-									color="inherit"
-									className={styles.loader}
-								/>
-							</div>
-						) : (
-							<>
-								<IconButton onClick={prevWeek}>
-									<NavigateBeforeIcon />
-								</IconButton>
-								<div className={styles.gridSection}>
-									{daysOfWeek.map((date) => (
-										<Column
-											curDate={date}
-											key={uuidv4()}
-											updateWeeklyTime={setWeeklyTime}
-										/>
-									))}
-								</div>
-								<IconButton onClick={nextWeek}>
-									<NavigateNextIcon />
-								</IconButton>
-							</>
-						)}
+			{!fetchingData && daysOfWeek.length > 0 ? (
+				<div className={styles.page}>
+					<IconButton onClick={prevWeek}>
+						<NavigateBeforeIcon />
+					</IconButton>
+					<div className={styles.entireStatSection}>
+						<ResponsiveContainer width="100%" height="100%">
+							<BarChart
+								width={500}
+								height={300}
+								data={daysOfWeek}
+								margin={{
+									top: 5,
+									right: 30,
+									left: 20,
+									bottom: 5,
+								}}>
+								<CartesianGrid strokeDasharray="3 3" />
+								<XAxis dataKey="date" />
+								<YAxis />
+								<Tooltip />
+								<Legend />
+								<Bar dataKey="minutes" fill="#00adb5" />
+							</BarChart>
+						</ResponsiveContainer>
 					</div>
-					{!fetchingData && (
-						<div>
-							<p>
-								Total time this week: {weeklyTime.toFixed(2)}{" "}
-								minutes
-							</p>
-							<p>
-								Total time this month: {monthlyTime.toFixed(2)}{" "}
-								minutes
-							</p>
-							<p>
-								Total time this year: {yearlyTime.toFixed(2)}{" "}
-								minutes
-							</p>
-						</div>
-					)}
+
+					<IconButton onClick={nextWeek}>
+						<NavigateNextIcon />
+					</IconButton>
 				</div>
 			) : (
-				<div className={styles.entireStatSection}>
+				<div className={`${styles.page} ${styles.center}`}>
 					<CircularProgress
 						color="inherit"
 						className={styles.loader}
 					/>
 				</div>
 			)}
+			<div className={styles.subStats}>
+				{!fetchingData && daysOfWeek.length > 0 ? (
+					<>
+						<SubStatSection
+							title="Total Time This Week:"
+							body={weeklyTime}
+						/>
+						<SubStatSection
+							title="Total Time This Month:"
+							body={monthlyTime}
+						/>
+						<SubStatSection
+							title="Total Time This Year:"
+							body={yearlyTime}
+						/>
+					</>
+				) : (
+					<>
+						<Stack spacing={1}>
+							<Skeleton
+								variant="rectangular"
+								width={248}
+								height={227}
+							/>
+							<Skeleton variant="text" />
+							<Skeleton variant="text" />
+						</Stack>
+						<Stack spacing={1}>
+							<Skeleton
+								variant="rectangular"
+								width={248}
+								height={227}
+							/>
+							<Skeleton variant="text" />
+							<Skeleton variant="text" />
+						</Stack>
+						<Stack spacing={1}>
+							<Skeleton
+								variant="rectangular"
+								width={248}
+								height={227}
+							/>
+							<Skeleton variant="text" />
+							<Skeleton variant="text" />
+						</Stack>
+					</>
+				)}
+			</div>
 		</>
 	);
 }

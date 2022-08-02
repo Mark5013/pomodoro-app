@@ -50,7 +50,10 @@ function MainPage() {
 							color="inherit"
 							onClick={setPomodoroMode}
 							size="large"
-							sx={{ textTransform: "capitalize" }}>
+							sx={{
+								textTransform: "capitalize",
+								fontFamily: "inherit",
+							}}>
 							Pomodoro
 						</Button>
 						<Button
@@ -58,7 +61,10 @@ function MainPage() {
 							color="inherit"
 							onClick={setShortBreakMode}
 							size="large"
-							sx={{ textTransform: "capitalize" }}>
+							sx={{
+								textTransform: "capitalize",
+								fontFamily: "inherit",
+							}}>
 							Short Break
 						</Button>
 						<Button
@@ -66,7 +72,10 @@ function MainPage() {
 							color="inherit"
 							onClick={setLongBreakMode}
 							size="large"
-							sx={{ textTransform: "capitalize" }}>
+							sx={{
+								textTransform: "capitalize",
+								fontFamily: "inherit",
+							}}>
 							Long Break
 						</Button>
 					</div>
@@ -79,7 +88,10 @@ function MainPage() {
 							color="inherit"
 							onClick={startTimer}
 							size="large"
-							sx={{ textTransform: "capitalize" }}>
+							sx={{
+								textTransform: "capitalize",
+								fontFamily: "inherit",
+							}}>
 							Start
 						</Button>
 						<Button
@@ -87,7 +99,10 @@ function MainPage() {
 							color="inherit"
 							onClick={clearTimer}
 							size="large"
-							sx={{ textTransform: "capitalize" }}>
+							sx={{
+								textTransform: "capitalize",
+								fontFamily: "inherit",
+							}}>
 							Pause
 						</Button>
 					</div>
