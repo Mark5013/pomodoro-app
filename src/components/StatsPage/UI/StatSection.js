@@ -19,18 +19,18 @@ import {
 } from "recharts";
 
 const monthNames = [
-	"January",
-	"February",
-	"March",
-	"April",
+	"Jan",
+	"Feb",
+	"Mar",
+	"Apr",
 	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December",
+	"Jun",
+	"Jul",
+	"Aug",
+	"Sept",
+	"Oct",
+	"Nov",
+	"Dec",
 ];
 
 function StatSection() {
@@ -155,6 +155,7 @@ function StatSection() {
 								monthNames[currentDate.getMonth()]
 							}'s Total Time:`}
 							monthName={monthNames[currentDate.getMonth()]}
+							year={currentDate.getYear() + 1900}
 							type="month"
 							body={monthlyTime}
 						/>

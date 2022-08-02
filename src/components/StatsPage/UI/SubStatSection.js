@@ -42,7 +42,8 @@ function SubStatSection(props) {
 					component="div"
 					fontFamily="inherit">
 					{props.type === "week" && props.title}
-					{props.type === "month" && props.title}
+					{props.type === "month" &&
+						`Total Time in ${monthName}, ${year}`}
 					{props.type === "year" && `Total Time In ${year}`}
 				</Typography>
 				<Typography
@@ -67,10 +68,9 @@ function SubStatSection(props) {
 								onChange={handleMonthChange}
 								autoWidth
 								label="Month">
-								<MenuItem value={"Jan."}>Jan</MenuItem>
-								<MenuItem value={"Feb."}>Feb.</MenuItem>
+								<MenuItem value={"Jan"}>Jan</MenuItem>
+								<MenuItem value={"Feb"}>Feb</MenuItem>
 								<MenuItem value={"Mar"}>Mar</MenuItem>
-
 								<MenuItem value={"Apr"}>Apr</MenuItem>
 								<MenuItem value={"May"}>May</MenuItem>
 								<MenuItem value={"Jun"}>Jun</MenuItem>
