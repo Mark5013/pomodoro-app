@@ -16,8 +16,10 @@ function useTimer() {
 		setHasError((prev) => !prev);
 	}
 
+	// updates how long a user has spent in pomodoro mode
 	async function updateMinutes(dateStr, secondsPassed) {
 		let response;
+		let message;
 		try {
 			response = await fetch(
 				"http://localhost:5000/stats/updateMinutes",
@@ -33,11 +35,13 @@ function useTimer() {
 					}),
 				}
 			);
+
+			message = await response.json();
 		} catch (err) {
 			console.log(err);
 			toggleError();
 		}
-		console.log(response);
+		console.log(message);
 	}
 
 	// sets app UI and logic to pomodoro mode

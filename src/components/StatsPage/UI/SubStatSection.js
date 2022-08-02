@@ -7,24 +7,119 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../../../store/userContext";
 
 function SubStatSection(props) {
 	const [monthName, setMonthName] = useState(props.monthName);
 	const [year, setYear] = useState(props.year);
 	const [minutes, setMinutes] = useState(props.body);
+	const userCtx = useContext(UserContext);
 
-	function handleYearChange(event) {
+	// will update minutes displayed on card when user changes the year
+	async function handleYearChange(event) {
 		//TODO UPDATE MINUTES
-		if (event.target.value !== year) {
-			setYear(event.target.value);
+		if (event.target.value && event.target.value !== year) {
+			const newYear = event.target.value;
+			let response;
+			let minutes;
+			// fetch minutes for current month and year
+			try {
+				response = await fetch(
+					`http://localhost:5000/stats/getMonthAndYearMinutes/${userCtx.user.userId}/${monthName}/${newYear}`,
+					{
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
+
+				minutes = await response.json();
+			} catch (err) {
+				// set minutes to 0 if err
+				setMinutes(0);
+				setYear(newYear);
+			}
+
+			// if minutes is returned, set minutes to the return value, else set it to 0
+			if (minutes.time) {
+				setMinutes(Math.floor(minutes.time));
+				setYear(newYear);
+			} else {
+				setMinutes(0);
+				setYear(newYear);
+			}
 		}
 	}
 
-	function handleMonthChange(event) {
+	// will update minutes displayed on card when user changes the month
+	async function handleMonthChange(event) {
 		//TODO UPDATE MINUTES
 		if (event.target.value !== monthName) {
-			setMonthName(event.target.value);
+			const newMonth = event.target.value;
+			let response;
+			let minutes;
+			// fetch minutes for current month and year
+			try {
+				response = await fetch(
+					`http://localhost:5000/stats/getMonthAndYearMinutes/${userCtx.user.userId}/${newMonth}/${year}`,
+					{
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
+
+				minutes = await response.json();
+			} catch (err) {
+				// if err, set minutes to 0
+				setMinutes(0);
+				setMonthName(newMonth);
+			}
+
+			// if minutes is returned, set minutes to the returned value, else set it to 0
+			if (minutes.time) {
+				setMinutes(Math.floor(minutes.time));
+				setMonthName(newMonth);
+			} else {
+				setMinutes(0);
+				setMonthName(newMonth);
+			}
+		}
+	}
+
+	// will only handle when the year is changed, doesn't care about the month
+	async function onlyHandleYearChange(event) {
+		if (event.target.value !== year) {
+			const newYear = event.target.value;
+			let response;
+			let minutes;
+			// fetch minutes for current year
+			try {
+				response = await fetch(
+					`http://localhost:5000/stats/getYearsMinutes/${userCtx.user.userId}/${newYear}`,
+					{
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
+
+				minutes = await response.json();
+			} catch (err) {
+				// if err, set minutes to 0
+				setMinutes(0);
+				setYear(newYear);
+			}
+
+			// if minutes is returned, set minutes to the returned value, else set it to 0
+			if (minutes.yearlyTime) {
+				setMinutes(Math.floor(minutes.yearlyTime));
+				setYear(newYear);
+			} else {
+				setMinutes(0);
+				setYear(newYear);
+			}
 		}
 	}
 
@@ -111,7 +206,7 @@ function SubStatSection(props) {
 							labelId="demo-simple-select-autowidth-label"
 							id="demo-simple-select-autowidth"
 							value={year}
-							onChange={handleYearChange}
+							onChange={onlyHandleYearChange}
 							autoWidth
 							label="Year">
 							<MenuItem value={"2022"}>2022</MenuItem>
