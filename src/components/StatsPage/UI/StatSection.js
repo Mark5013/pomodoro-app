@@ -18,6 +18,21 @@ import {
 	ResponsiveContainer,
 } from "recharts";
 
+const monthNames = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
+];
+
 function StatSection() {
 	const userCtx = useContext(UserContext);
 	const [monthlyTime, setMonthlyTime] = useState(0);
@@ -131,15 +146,24 @@ function StatSection() {
 				{!fetchingData && daysOfWeek.length > 0 ? (
 					<>
 						<SubStatSection
-							title="Total Time This Week:"
+							title="Current Week's Time:"
+							type="week"
 							body={weeklyTime}
 						/>
 						<SubStatSection
-							title="Total Time This Month:"
+							title={`${
+								monthNames[currentDate.getMonth()]
+							}'s Total Time:`}
+							monthName={monthNames[currentDate.getMonth()]}
+							type="month"
 							body={monthlyTime}
 						/>
 						<SubStatSection
-							title="Total Time This Year:"
+							title={`Total Time In ${
+								currentDate.getYear() + 1900
+							}`}
+							year={currentDate.getYear() + 1900}
+							type="year"
 							body={yearlyTime}
 						/>
 					</>
@@ -148,8 +172,8 @@ function StatSection() {
 						<Stack spacing={1}>
 							<Skeleton
 								variant="rectangular"
-								width={248}
-								height={227}
+								width={300}
+								height={262}
 							/>
 							<Skeleton variant="text" />
 							<Skeleton variant="text" />
@@ -157,8 +181,8 @@ function StatSection() {
 						<Stack spacing={1}>
 							<Skeleton
 								variant="rectangular"
-								width={248}
-								height={227}
+								width={300}
+								height={262}
 							/>
 							<Skeleton variant="text" />
 							<Skeleton variant="text" />
@@ -166,8 +190,8 @@ function StatSection() {
 						<Stack spacing={1}>
 							<Skeleton
 								variant="rectangular"
-								width={248}
-								height={227}
+								width={300}
+								height={262}
 							/>
 							<Skeleton variant="text" />
 							<Skeleton variant="text" />
