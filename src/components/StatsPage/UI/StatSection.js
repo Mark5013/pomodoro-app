@@ -88,15 +88,14 @@ function StatSection() {
 				setYearlyTime(0);
 			}
 
-			setWeeklyTime(
-				Math.floor(daysOfWeek.reduce((acc, e) => acc + e.minutes, 0))
-			);
 			setMonthlyTime(Math.floor(monthTime.monthlyTime) || 0);
 			setYearlyTime(Math.floor(yearTime.yearlyTime) || 0);
 		}
 
 		if (userCtx.user.isLoggedIn) {
-			getFullWeek(userCtx.user);
+			getFullWeek(userCtx.user).then((res) => {
+				setWeeklyTime(res);
+			});
 			getUserTime(userCtx.user);
 		}
 	}, [currentDate, userCtx.user, getFullWeek]);

@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 function useWeek() {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [daysOfWeek, setDaysOfWeek] = useState([]);
-
 	const [fetchingData, setFetchingData] = useState(false);
 
 	function toIsoString(date) {
@@ -71,8 +70,13 @@ function useWeek() {
 				const time = await getMinutesSpent(curWeek[i], user);
 				weeklyData.push({ minutes: time, date: curWeek[i] });
 			}
+
+			const minutesForWeek = Math.floor(
+				weeklyData.reduce((acc, e) => acc + e.minutes, 0)
+			);
 			setDaysOfWeek([...weeklyData]);
 			setFetchingData(false);
+			return minutesForWeek;
 		},
 		[currentDate]
 	);
