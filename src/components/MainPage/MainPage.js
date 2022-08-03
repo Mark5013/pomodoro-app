@@ -1,8 +1,7 @@
 import styles from "./MainPage.module.css";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import ModeContext from "../../store/modeContext";
 import useTimer from "../../hooks/use-timer";
-import { Helmet } from "react-helmet";
 import Header from "../Shared/Header/Header";
 import TimerCard from "./UI/TimerCard";
 import { Button } from "@mui/material";
@@ -24,13 +23,12 @@ function MainPage() {
 		toggleError,
 	} = useTimer();
 
+	useEffect(() => {
+		document.title = `${minutes}:${seconds}`;
+	}, [seconds]);
+	console.log("render");
 	return (
 		<>
-			<Helmet>
-				<title>
-					{minutes}:{seconds} - PomoTracker
-				</title>
-			</Helmet>
 			{hasError && (
 				<ErrorModal
 					closeErrorModal={toggleError}

@@ -57,6 +57,9 @@ function useTimer() {
 		clearTimer();
 		modeCtx.switchMode("pomodoro");
 		setMinutes(settingsContext.pomodoroModeLength);
+		timerLength =
+			Number(settingsContext.pomodoroModeLength) * 60000 +
+			Number("00") * 1000;
 		setSeconds("00");
 	}
 
@@ -79,6 +82,10 @@ function useTimer() {
 		}
 		modeCtx.switchMode("shortBreak");
 		setMinutes(settingsContext.shortBreakLength);
+		timerLength =
+			Number(settingsContext.shortBreakLength) * 60000 +
+			Number("00") * 1000;
+
 		setSeconds("00");
 	}
 
@@ -86,6 +93,7 @@ function useTimer() {
 	function setLongBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
+		console.log(timerLength);
 		if (
 			userCtx.user.isLoggedIn &&
 			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength >
@@ -100,6 +108,9 @@ function useTimer() {
 		}
 		modeCtx.switchMode("longBreak");
 		setMinutes(settingsContext.longBreakLength);
+		timerLength =
+			Number(settingsContext.longBreakLength) * 60000 +
+			Number("00") * 1000;
 		setSeconds("00");
 	}
 
