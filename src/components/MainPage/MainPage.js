@@ -26,8 +26,8 @@ function MainPage() {
 
 	// update title of document
 	useEffect(() => {
-		document.title = `${minutes}:${seconds}`;
-	}, [seconds]);
+		document.title = `${minutes}:${seconds} - PomoTracker`;
+	}, [minutes, seconds]);
 
 	return (
 		<>

@@ -3,6 +3,7 @@ import UserContext from "../store/userContext";
 import ModeContext from "../store/modeContext";
 import SettingsContext from "../store/settingsContext";
 import useHttpRequest from "../hooks/use-HttpRequest";
+import SilkAlarm from "../static/Audio/SilkAlarm.mp3";
 
 let interval;
 let timerLength;
@@ -16,6 +17,26 @@ function useTimer() {
 	const [seconds, setSeconds] = useState("00");
 	const [counter, setCounter] = useState(0);
 	const [hasError, setHasError] = useState(false);
+	const alarm = { audio: SilkAlarm };
+
+	// will play alarm sound whenever a timer ends
+	function playSound() {
+		// create audio object and set volume, might allow users to customize later
+		const sound = new Audio(alarm.audio);
+		sound.volume = 0.1;
+		sound.play();
+
+		// fade audio out
+		const audioInterval = setInterval(() => {
+			if (sound.paused) {
+				clearInterval(audioInterval);
+			}
+			sound.volume -= 0.01;
+		}, 500);
+
+		// pause the audio after 5 seconds
+		setTimeout(() => sound.pause(), 5000);
+	}
 
 	function toggleError() {
 		setHasError((prev) => !prev);
@@ -138,6 +159,7 @@ function useTimer() {
 				} else {
 					setPomodoroMode();
 				}
+				playSound();
 				clearTimer();
 			} else {
 				setMinutes(
