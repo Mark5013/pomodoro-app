@@ -140,7 +140,7 @@ function Header() {
 			)}
 			<div className={`${styles.header}`}>
 				<Link to="/" className={styles.title}>
-					<h1 className={styles.title}>Pomodoro Timer</h1>
+					<h1 className={styles.title}>PomoTracker</h1>
 				</Link>
 				<div className={styles.navButtons}>
 					{!userCtx.user.isLoggedIn && (

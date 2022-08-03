@@ -8,6 +8,10 @@
 }
 
 .settingsSection {
-	margin: 1em;
+	margin: 2em;
 	width: 800px;
+	height: 600px;
+}
+
+.settingsTitle {
 }

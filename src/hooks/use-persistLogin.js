@@ -75,9 +75,7 @@ function usePersistLogin() {
 		}
 		// set user to logged in along with storing name and picture, move to database soon :)
 		if (user) {
-			console.log(user);
 			userCtx.login(userInfo.name, userInfo.picture, userInfo.sub);
-			console.log("here");
 			settingsCtx.changePomodoroLength(user.settings.pomodoroLength);
 			settingsCtx.changeLongBreakLength(user.settings.longBreakLength);
 			settingsCtx.changeShortBreakLength(user.settings.shortBreakLength);

@@ -46,6 +46,7 @@ function useTimer() {
 			message = await response.json();
 		} catch (err) {
 			console.log(err);
+			console.log(message);
 			toggleError();
 		}
 	}
@@ -63,14 +64,12 @@ function useTimer() {
 	function setShortBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
-		console.log(
-			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength
-		);
 
 		if (
 			userCtx.user.isLoggedIn &&
 			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength >
-				0
+				0 &&
+			modeCtx.mode === "pomodoro"
 		) {
 			updateMinutes(
 				new Date().toISOString().split("T")[0],
@@ -90,7 +89,8 @@ function useTimer() {
 		if (
 			userCtx.user.isLoggedIn &&
 			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength >
-				0
+				0 &&
+			modeCtx.mode === "pomodoro"
 		) {
 			updateMinutes(
 				new Date().toISOString().split("T")[0],

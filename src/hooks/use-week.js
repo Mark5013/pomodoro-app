@@ -5,6 +5,7 @@ function useWeek() {
 	const [daysOfWeek, setDaysOfWeek] = useState([]);
 	const [fetchingData, setFetchingData] = useState(false);
 
+	// formats dates the way i need them lol
 	function toIsoString(date) {
 		var tzo = -date.getTimezoneOffset(),
 			dif = tzo >= 0 ? "+" : "-",
@@ -31,46 +32,65 @@ function useWeek() {
 		);
 	}
 
+	// get minutes spent for a specified date
 	async function getMinutesSpent(curDate, user) {
+		// only if user is logged in
+		// if any errors occur, will return 0
 		if (user.isLoggedIn) {
-			const response = await fetch(
-				`http://localhost:5000/stats/getDatesMinutes/${user.userId}/${curDate}`,
-				{
-					headers: {
-						"Content-type": "application/json",
-					},
-				}
-			);
+			let response;
+			let data;
+			try {
+				response = await fetch(
+					`http://localhost:5000/stats/getDatesMinutes/${user.userId}/${curDate}`,
+					{
+						headers: {
+							"Content-type": "application/json",
+						},
+					}
+				);
 
-			const data = await response.json();
-
-			return data.time;
+				data = await response.json();
+			} catch (err) {
+				return 0;
+			}
+			if (data) {
+				return data.time;
+			} else {
+				return 0;
+			}
 		}
+
 		return 0;
 	}
 
+	// gets the full week of dates
 	const getFullWeek = useCallback(
 		async (user) => {
 			setFetchingData(true);
 			const curWeek = [];
 			const weeklyData = [];
+
+			// get all previous days to current day for current week
 			for (let i = currentDate.getDay(); i >= 0; i--) {
 				let day = new Date(currentDate);
 				day.setDate(day.getDate() - i);
 				curWeek.push(toIsoString(day).split("T")[0]);
 			}
 
+			// get all future days to current day for current week
 			for (let i = 1; i <= 6 - currentDate.getDay(); ++i) {
 				let day = new Date(currentDate);
 				day.setDate(day.getDate() + i);
 				curWeek.push(toIsoString(day).split("T")[0]);
 			}
 
+			// get time spent in each day for the week
 			for (let i = 0; i < curWeek.length; ++i) {
 				const time = await getMinutesSpent(curWeek[i], user);
 				weeklyData.push({ minutes: time, date: curWeek[i] });
 			}
 
+			// set data
 			const minutesForWeek = Math.floor(
 				weeklyData.reduce((acc, e) => acc + e.minutes, 0)
 			);
@@ -81,12 +101,14 @@ function useWeek() {
 		[currentDate]
 	);
 
+	// gets next week
 	function nextWeek() {
 		let newDate = new Date(currentDate);
 		newDate.setDate(newDate.getDate() + 7);
 		setCurrentDate(newDate);
 	}
 
+	// gets previous week
 	function prevWeek() {
 		let newDate = new Date(currentDate);
 		newDate.setDate(newDate.getDate() - 7);

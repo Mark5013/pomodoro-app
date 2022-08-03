@@ -85,15 +85,16 @@ function TimerLengthSettings() {
 				}
 			);
 			user = await response.json();
-			console.log(user);
 		} catch (err) {}
-		settingsCtx.changeLongBreakLength(newLength);
+		if (user) {
+			settingsCtx.changeLongBreakLength(newLength);
+		}
 	};
 
 	return (
 		<>
 			<div className={styles.input}>
-				<p>Pomodoro timer length:</p>
+				<p className={styles.inputTitle}>Pomodoro timer length:</p>
 				<FormControl size="small">
 					<InputLabel id="pomodoro-select-label">Length</InputLabel>
 					<Select
@@ -118,7 +119,7 @@ function TimerLengthSettings() {
 				</FormControl>
 			</div>
 			<div className={styles.input}>
-				<p>Short-break timer length:</p>
+				<p className={styles.inputTitle}>Short-break timer length:</p>
 				<FormControl size="small">
 					<InputLabel id="short-break-select-label">
 						Length
@@ -145,7 +146,7 @@ function TimerLengthSettings() {
 				</FormControl>
 			</div>
 			<div className={styles.input}>
-				<p>Long-break timer length:</p>
+				<p className={styles.inputTitle}>Long-break timer length:</p>
 				<FormControl size="small">
 					<InputLabel id="long-break-select-label">Length</InputLabel>
 					<Select
