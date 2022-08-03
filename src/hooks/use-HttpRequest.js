@@ -22,7 +22,6 @@ function useHttpRequest() {
 				if (!response.ok) {
 					throw new Error("Something went wrong, try again later");
 				}
-				console.log(responseData);
 				return responseData;
 			} catch (err) {}
 		},

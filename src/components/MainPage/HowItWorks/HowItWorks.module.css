@@ -1,0 +1,18 @@
+.background {
+	padding: 1em;
+	background-color: #eeeeee;
+	height: 400px;
+	text-align: center;
+}
+
+.title {
+	margin: 1em;
+}
+
+.infoSection {
+	line-height: 1.7;
+}
+
+.infoCategories {
+	width: 700px;
+}

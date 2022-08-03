@@ -19,6 +19,7 @@
 .background {
 	width: 100vw;
 	height: auto;
+	padding: 1em;
 }
 
 .pomodoroBackground {

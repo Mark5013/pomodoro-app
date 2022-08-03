@@ -8,6 +8,7 @@ import { Button } from "@mui/material";
 import TaskList from "./UI/TaskList";
 import Footer from "../Shared/Footer/Footer";
 import ErrorModal from "../Shared/UI/ErrorModal";
+import HowItWorks from "./HowItWorks/HowItWorks";
 
 function MainPage() {
 	const modeCtx = useContext(ModeContext);
@@ -112,8 +113,9 @@ function MainPage() {
 					</div>
 				</TimerCard>
 				<TaskList />
-				<Footer />
 			</div>
+			<HowItWorks />
+			<Footer />
 		</>
 	);
 }
