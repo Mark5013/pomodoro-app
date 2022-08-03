@@ -7,10 +7,12 @@ import ErrorModal from "../UI/ErrorModal";
 import ProfileMenu from "../UI/ProfileMenu";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import SettingsContext from "../../../store/settingsContext";
 
 function Header() {
 	const navigate = useNavigate();
 	const userCtx = useContext(UserContext);
+	const settingsCtx = useContext(SettingsContext);
 	const [showErrorModal, setShowErrorModal] = useState(false);
 	const { persistLogin } = usePersistLogin();
 
@@ -101,10 +103,18 @@ function Header() {
 				toggleErrorModal();
 				console.log(err);
 			}
-			console.log(user);
+
 			// set user to logged in along with storing name and picture, move to database soon :)
 			if (user) {
+				console.log(user);
 				userCtx.login(userInfo.name, userInfo.picture, userInfo.sub);
+				settingsCtx.changePomodoroLength(user.settings.pomodoroLength);
+				settingsCtx.changeLongBreakLength(
+					user.settings.longBreakLength
+				);
+				settingsCtx.changeShortBreakLength(
+					user.settings.shortBreakLength
+				);
 			} else {
 				toggleErrorModal();
 				console.log(user);

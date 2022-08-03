@@ -66,6 +66,7 @@ export default function ProfileMenu(props) {
 						src={props.src}
 						alt="profile pic"
 						className={styles.profilePicture}
+						referrerPolicy="no-referrer"
 					/>
 				</IconButton>
 				<Popper
@@ -98,9 +99,13 @@ export default function ProfileMenu(props) {
 												Profile
 											</MenuItem>
 										</NavLink>
-										<MenuItem onClick={handleClose}>
-											Settings
-										</MenuItem>
+										<NavLink
+											to="/settings"
+											className={styles.menuBtn}>
+											<MenuItem onClick={handleClose}>
+												Settings
+											</MenuItem>
+										</NavLink>
 										<MenuItem onClick={handleClose}>
 											Logout
 										</MenuItem>

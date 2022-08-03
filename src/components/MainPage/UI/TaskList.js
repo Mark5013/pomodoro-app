@@ -11,7 +11,6 @@ import ErrorModal from "../../Shared/UI/ErrorModal";
 
 function TaskList() {
 	const userCtx = useContext(UserContext);
-
 	const [showForm, setShowForm] = useState(false);
 	const [taskList, setTaskList] = useState([]);
 	const [showErrorModal, setShowErrorModal] = useState(false);

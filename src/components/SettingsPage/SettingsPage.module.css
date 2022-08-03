@@ -1,0 +1,13 @@
+.background {
+	width: 100%;
+	height: auto;
+}
+
+.headerBackground {
+	background-color: #393e46;
+}
+
+.settingsSection {
+	margin: 1em;
+	width: 800px;
+}

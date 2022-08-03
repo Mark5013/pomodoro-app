@@ -1,23 +1,30 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import UserContext from "../store/userContext";
 import ModeContext from "../store/modeContext";
+import SettingsContext from "../store/settingsContext";
 let interval;
+let timerLength;
 
 function useTimer() {
-	const [minutes, setMinutes] = useState("25");
-	const [seconds, setSeconds] = useState("00");
-	const [timeElapsed, setTimeElapsed] = useState(0);
-	const [counter, setCounter] = useState(0);
-	const [hasError, setHasError] = useState(false);
+	const settingsContext = useContext(SettingsContext);
 	const userCtx = useContext(UserContext);
 	const modeCtx = useContext(ModeContext);
+
+	const [minutes, setMinutes] = useState("25");
+	const [seconds, setSeconds] = useState("00");
+	const [counter, setCounter] = useState(0);
+	const [hasError, setHasError] = useState(false);
 
 	function toggleError() {
 		setHasError((prev) => !prev);
 	}
 
+	useEffect(() => {
+		setMinutes(settingsContext.pomodoroModeLength);
+	}, [settingsContext.pomodoroModeLength]);
+
 	// updates how long a user has spent in pomodoro mode
-	async function updateMinutes(dateStr, secondsPassed) {
+	async function updateMinutes(dateStr, millisecondsPassed) {
 		let response;
 		let message;
 		try {
@@ -30,7 +37,7 @@ function useTimer() {
 					},
 					body: JSON.stringify({
 						dateStr,
-						secondsPassed,
+						millisecondsPassed,
 						userId: userCtx.user.userId,
 					}),
 				}
@@ -41,7 +48,6 @@ function useTimer() {
 			console.log(err);
 			toggleError();
 		}
-		console.log(message);
 	}
 
 	// sets app UI and logic to pomodoro mode
@@ -49,7 +55,7 @@ function useTimer() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
 		modeCtx.switchMode("pomodoro");
-		setMinutes("25");
+		setMinutes(settingsContext.pomodoroModeLength);
 		setSeconds("00");
 	}
 
@@ -57,12 +63,23 @@ function useTimer() {
 	function setShortBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
-		if (userCtx.user.isLoggedIn && timeElapsed > 0) {
-			updateMinutes(new Date().toISOString().split("T")[0], timeElapsed);
-			setTimeElapsed(0);
+		console.log(
+			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength
+		);
+
+		if (
+			userCtx.user.isLoggedIn &&
+			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength >
+				0
+		) {
+			updateMinutes(
+				new Date().toISOString().split("T")[0],
+				parseInt(settingsContext.pomodoroModeLength) * 60000 -
+					timerLength
+			);
 		}
 		modeCtx.switchMode("shortBreak");
-		setMinutes("05");
+		setMinutes(settingsContext.shortBreakLength);
 		setSeconds("00");
 	}
 
@@ -70,12 +87,19 @@ function useTimer() {
 	function setLongBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
 		clearTimer();
-		if (userCtx.user.isLoggedIn && timeElapsed > 0) {
-			updateMinutes(new Date().toISOString().split("T")[0], timeElapsed);
-			setTimeElapsed(0);
+		if (
+			userCtx.user.isLoggedIn &&
+			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength >
+				0
+		) {
+			updateMinutes(
+				new Date().toISOString().split("T")[0],
+				parseInt(settingsContext.pomodoroModeLength) * 60000 -
+					timerLength
+			);
 		}
 		modeCtx.switchMode("longBreak");
-		setMinutes("15");
+		setMinutes(settingsContext.longBreakLength);
 		setSeconds("00");
 	}
 
@@ -87,15 +111,12 @@ function useTimer() {
 	// controls timer displays on screen
 	function startTimer() {
 		// convert minutes and seconds to milliseconds
-		let timerLength = Number(minutes) * 60000 + Number(seconds) * 1000;
-		console.log(timerLength);
+		timerLength = Number(minutes) * 60000 + Number(seconds) * 1000;
 
 		interval = setInterval(() => {
 			// decrement timer length by 1 second every second
 			timerLength -= 1000;
-			if (userCtx.user.isLoggedIn && modeCtx.mode === "pomodoro") {
-				setTimeElapsed((prev) => prev + 1);
-			}
+
 			// if timerLength hits 0, clear the intervals
 			if (timerLength <= 0) {
 				if (counter === 3 && modeCtx.mode === "pomodoro") {
@@ -109,7 +130,6 @@ function useTimer() {
 				} else {
 					setPomodoroMode();
 				}
-				setTimeElapsed(0);
 				clearTimer();
 			} else {
 				setMinutes(
