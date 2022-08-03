@@ -8,6 +8,7 @@ import ProfileMenu from "../UI/ProfileMenu";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import SettingsContext from "../../../store/settingsContext";
+import useHttpRequest from "../../../hooks/use-HttpRequest";
 
 function Header() {
 	const navigate = useNavigate();
@@ -15,47 +16,43 @@ function Header() {
 	const settingsCtx = useContext(SettingsContext);
 	const [showErrorModal, setShowErrorModal] = useState(false);
 	const { persistLogin } = usePersistLogin();
+	const sendRequest = useHttpRequest();
 
 	function toggleErrorModal() {
 		setShowErrorModal((prev) => !prev);
 	}
 
+	// logs user out
 	const logout = async () => {
-		const response = await fetch("http://localhost:5000/logout", {
-			method: "POST",
-			credentials: "include",
-			headers: {
-				"Content-type": "application/json",
-			},
-		});
-		if (response.ok) {
+		// log user out
+		const response = await sendRequest(
+			"http://localhost:5000/logout",
+			"POST",
+			{ "Content-type": "application/json" },
+			null,
+			"include"
+		);
+
+		// if successfull redirect and clear userCtx
+		if (response) {
 			userCtx.logout();
 			navigate("/", { replace: true });
-		} else {
-			console.log("failed to logout");
 		}
 	};
 
+	// logs user in
 	const login = useGoogleLogin({
 		onSuccess: async (codeResponse) => {
-			let tokenResponse;
-			let accessToken;
-			try {
-				tokenResponse = await fetch("http://localhost:5000/login", {
-					method: "POST",
-					credentials: "include",
-					headers: {
-						"Content-type": "application/json",
-					},
-					body: JSON.stringify(codeResponse),
-				});
-				// tokens obtained from google api
-				accessToken = await tokenResponse.json();
-			} catch (err) {
-				toggleErrorModal();
-				console.log(err);
-			}
+			// get access token
+			const accessToken = await sendRequest(
+				"http://localhost:5000/login",
+				"POST",
+				{ "Content-type": "application/json" },
+				JSON.stringify(codeResponse),
+				"include"
+			);
 
+			// if no access t oken toggle the error modal
 			if (!accessToken) {
 				//show error modal
 				toggleErrorModal();
@@ -63,48 +60,24 @@ function Header() {
 			}
 
 			// fetch users info from google acc
-			let userInfoResponse;
-			let userInfo;
-			try {
-				userInfoResponse = await fetch(
-					"https://www.googleapis.com/oauth2/v3/userinfo",
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
-					}
-				);
+			const userInfo = await sendRequest(
+				"https://www.googleapis.com/oauth2/v3/userinfo",
+				"GET",
+				{ Authorization: `Bearer ${accessToken}` }
+			);
 
-				// google account user info
-				userInfo = await userInfoResponse.json();
-			} catch (err) {
-				toggleErrorModal();
-				console.log(err);
-			}
+			// find or create google account, acc will be returned
+			const user = await sendRequest(
+				"http://localhost:5000/login/findOrCreate",
+				"POST",
+				{ "Content-type": "application/json" },
+				JSON.stringify({
+					name: userInfo.name,
+					id: userInfo.sub,
+				})
+			);
 
-			// find or create google account
-			let userResponse;
-			let user;
-			try {
-				userResponse = await fetch(
-					"http://localhost:5000/login/findOrCreate",
-					{
-						method: "POST",
-						headers: { "Content-type": "application/json" },
-						body: JSON.stringify({
-							name: userInfo.name,
-							id: userInfo.sub,
-						}),
-					}
-				);
-				// user created or found from data base
-				user = await userResponse.json();
-			} catch (err) {
-				toggleErrorModal();
-				console.log(err);
-			}
-
-			// set user to logged in along with storing name and picture, move to database soon :)
+			// set user to logged in along with storing name and picture, also set users settings
 			if (user) {
 				console.log(user);
 				userCtx.login(userInfo.name, userInfo.picture, userInfo.sub);
@@ -117,7 +90,6 @@ function Header() {
 				);
 			} else {
 				toggleErrorModal();
-				console.log(user);
 			}
 		},
 		flow: "auth-code",

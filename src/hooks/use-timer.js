@@ -2,6 +2,8 @@ import { useState, useContext, useEffect } from "react";
 import UserContext from "../store/userContext";
 import ModeContext from "../store/modeContext";
 import SettingsContext from "../store/settingsContext";
+import useHttpRequest from "../hooks/use-HttpRequest";
+
 let interval;
 let timerLength;
 
@@ -9,7 +11,7 @@ function useTimer() {
 	const settingsContext = useContext(SettingsContext);
 	const userCtx = useContext(UserContext);
 	const modeCtx = useContext(ModeContext);
-
+	const sendRequest = useHttpRequest();
 	const [minutes, setMinutes] = useState("25");
 	const [seconds, setSeconds] = useState("00");
 	const [counter, setCounter] = useState(0);
@@ -25,35 +27,25 @@ function useTimer() {
 
 	// updates how long a user has spent in pomodoro mode
 	async function updateMinutes(dateStr, millisecondsPassed) {
-		let response;
-		let message;
-		try {
-			response = await fetch(
-				"http://localhost:5000/stats/updateMinutes",
-				{
-					method: "POST",
-					headers: {
-						"Content-type": "application/json",
-					},
-					body: JSON.stringify({
-						dateStr,
-						millisecondsPassed,
-						userId: userCtx.user.userId,
-					}),
-				}
-			);
+		const message = await sendRequest(
+			"http://localhost:5000/stats/updateMinutes",
+			"POST",
+			{ "Content-type": "application/json" },
+			JSON.stringify({
+				dateStr,
+				millisecondsPassed,
+				userId: userCtx.user.userId,
+			})
+		);
 
-			message = await response.json();
-		} catch (err) {
-			console.log(err);
-			console.log(message);
-			toggleError();
-		}
+		console.log(message);
 	}
 
 	// sets app UI and logic to pomodoro mode
 	function setPomodoroMode() {
 		//TODO IF TIMER RUNNING ALERT USER
+
+		// CLEAR TIMER, SWITCH MODE, UPDATE TIMERLENGTH TO POMODOROMODE LENGTH AND UPDATE MINUTES/SECONDS
 		clearTimer();
 		modeCtx.switchMode("pomodoro");
 		setMinutes(settingsContext.pomodoroModeLength);
@@ -66,6 +58,9 @@ function useTimer() {
 	// sets app UI and logic to short break mode
 	function setShortBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
+
+		// CLEAR TIMER, MAKE SURE USER IS LOGGED IN, TIME IN POMODORO MODE IS > 0 AND WE ARE COMING FROM POMODORO MODE, THEN UPDATE MINUTES
+		// ALSO SWITCH MODE, SET MINUTES/SECONDS, AND SET TIMERLENGTH TO SHORT BREAK LENGTH
 		clearTimer();
 
 		if (
@@ -92,8 +87,10 @@ function useTimer() {
 	// sets app UI and logic to long break mode
 	function setLongBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
+
+		// CLEAR TIMER, CHECK THAT USER IS LOGGED IN, TIME SPENT IN POMORODO MODE IS > 0 AND WE ARE COMING FROM POMODORO MODE, THEN UPDATE MINUTES
+		// ALSO SWITCH MODE, SET MINUTES/SECONDS, AND SET TIMER LENGTH TO LONG BREAK LENGTH
 		clearTimer();
-		console.log(timerLength);
 		if (
 			userCtx.user.isLoggedIn &&
 			parseInt(settingsContext.pomodoroModeLength) * 60000 - timerLength >

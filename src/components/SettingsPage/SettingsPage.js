@@ -14,7 +14,7 @@ function SettingsPage() {
 				<Header />
 			</div>
 			<div className={styles.settingsSection}>
-				<h2 className={styles.settingsTitle}>Timer Settings:</h2>
+				<h2>Timer Settings:</h2>
 				<TimerLengthSettings />
 			</div>
 			<Footer />

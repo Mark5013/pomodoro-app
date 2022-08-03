@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
+import useHttpRequest from "./use-HttpRequest";
 
 function useWeek() {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [daysOfWeek, setDaysOfWeek] = useState([]);
 	const [fetchingData, setFetchingData] = useState(false);
+	const sendRequest = useHttpRequest();
 
 	// formats dates the way i need them lol
 	function toIsoString(date) {
@@ -37,24 +39,14 @@ function useWeek() {
 		// only if user is logged in
 		// if any errors occur, will return 0
 		if (user.isLoggedIn) {
-			let response;
-			let data;
-			try {
-				response = await fetch(
-					`http://localhost:5000/stats/getDatesMinutes/${user.userId}/${curDate}`,
-					{
-						headers: {
-							"Content-type": "application/json",
-						},
-					}
-				);
+			const minutes = await sendRequest(
+				`http://localhost:5000/stats/getDatesMinutes/${user.userId}/${curDate}`,
+				"GET",
+				{ "Content-type": "application/json" }
+			);
 
-				data = await response.json();
-			} catch (err) {
-				return 0;
-			}
-			if (data) {
-				return data.time;
+			if (minutes) {
+				return minutes.time;
 			} else {
 				return 0;
 			}

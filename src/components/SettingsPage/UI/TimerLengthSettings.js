@@ -3,89 +3,79 @@ import { FormControl, Select, MenuItem, InputLabel } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
 import SettingsContext from "../../../store/settingsContext";
 import UserContext from "../../../store/userContext";
+import useHttpRequest from "../../../hooks/use-HttpRequest";
 
 function TimerLengthSettings() {
 	const settingsCtx = useContext(SettingsContext);
 	const userCtx = useContext(UserContext);
-
+	const sendRequest = useHttpRequest();
 	const [pomodoroModeLength, setPomodoroModeLength] = useState("25");
 	const [shortBreakLength, setShortBreakLength] = useState("05");
 	const [longBreakLength, setLongBreakLength] = useState("15");
 
+	// whenever settings change update the users settings
 	useEffect(() => {
 		setPomodoroModeLength(settingsCtx.pomodoroModeLength);
 		setShortBreakLength(settingsCtx.shortBreakLength);
 		setLongBreakLength(settingsCtx.longBreakLength);
 	}, [settingsCtx]);
 
+	// handle user changing their pomodoro length setting
 	const handlePomodoroChange = async (event) => {
 		const newLength = event.target.value;
-		let response;
-		let user;
-		try {
-			response = await fetch(
-				"http://localhost:5000/settings/updatePomodoroLength",
-				{
-					method: "POST",
-					headers: {
-						"Content-type": "application/json",
-					},
-					body: JSON.stringify({
-						newLength,
-						uid: userCtx.user.userId,
-					}),
-				}
-			);
-			user = await response.json();
-			console.log(user);
-		} catch (err) {}
-		settingsCtx.changePomodoroLength(newLength);
+
+		// update the users length for pomodoro mode
+		const user = await sendRequest(
+			"http://localhost:5000/settings/updatePomodoroLength",
+			"POST",
+			{ "Content-type": "application/json" },
+			JSON.stringify({
+				newLength,
+				uid: userCtx.user.userId,
+			})
+		);
+
+		// if successfull change setting
+		if (user) {
+			settingsCtx.changePomodoroLength(newLength);
+		}
 	};
 
 	const handleShortBreakChange = async (event) => {
 		const newLength = event.target.value;
-		let response;
-		let user;
-		try {
-			response = await fetch(
-				"http://localhost:5000/settings/updateShortBreakLength",
-				{
-					method: "POST",
-					headers: {
-						"Content-type": "application/json",
-					},
-					body: JSON.stringify({
-						newLength,
-						uid: userCtx.user.userId,
-					}),
-				}
-			);
-			user = await response.json();
-			console.log(user);
-		} catch (err) {}
-		settingsCtx.changeShortBreakLength(newLength);
+
+		// update users length for short breaks
+		const user = await sendRequest(
+			"http://localhost:5000/settings/updateShortBreakLength",
+			"POST",
+			{ "Content-type": "application/json" },
+			JSON.stringify({
+				newLength,
+				uid: userCtx.user.userId,
+			})
+		);
+
+		// if successfull update
+		if (user) {
+			settingsCtx.changeShortBreakLength(newLength);
+		}
 	};
 
 	const handleLongBreakChange = async (event) => {
 		const newLength = event.target.value;
-		let response;
-		let user;
-		try {
-			response = await fetch(
-				"http://localhost:5000/settings/updateLongBreakLength",
-				{
-					method: "POST",
-					headers: {
-						"Content-type": "application/json",
-					},
-					body: JSON.stringify({
-						newLength,
-						uid: userCtx.user.userId,
-					}),
-				}
-			);
-			user = await response.json();
-		} catch (err) {}
+
+		// update users length for long breaks
+		const user = await sendRequest(
+			"http://localhost:5000/settings/updateLongBreakLength",
+			"POST",
+			{ "Content-type": "application/json" },
+			JSON.stringify({
+				newLength,
+				uid: userCtx.user.userId,
+			})
+		);
+
+		// if successfull change the settings
 		if (user) {
 			settingsCtx.changeLongBreakLength(newLength);
 		}
@@ -103,7 +93,7 @@ function TimerLengthSettings() {
 						value={pomodoroModeLength}
 						label="pomodoro-mode-length"
 						onChange={handlePomodoroChange}>
-						<MenuItem value={"05"}>5</MenuItem>
+						<MenuItem value={"05"}>05</MenuItem>
 						<MenuItem value={"10"}>10</MenuItem>
 						<MenuItem value={"15"}>15</MenuItem>
 						<MenuItem value={"20"}>20</MenuItem>
@@ -130,7 +120,7 @@ function TimerLengthSettings() {
 						value={shortBreakLength}
 						label="short-break-mode-length"
 						onChange={handleShortBreakChange}>
-						<MenuItem value={"05"}>5</MenuItem>
+						<MenuItem value={"05"}>05</MenuItem>
 						<MenuItem value={"10"}>10</MenuItem>
 						<MenuItem value={"15"}>15</MenuItem>
 						<MenuItem value={"20"}>20</MenuItem>
@@ -155,7 +145,7 @@ function TimerLengthSettings() {
 						value={longBreakLength}
 						label="long-break-length"
 						onChange={handleLongBreakChange}>
-						<MenuItem value={"05"}>5</MenuItem>
+						<MenuItem value={"05"}>05</MenuItem>
 						<MenuItem value={"10"}>10</MenuItem>
 						<MenuItem value={"15"}>15</MenuItem>
 						<MenuItem value={"20"}>20</MenuItem>

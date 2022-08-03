@@ -17,6 +17,7 @@ import {
 	Legend,
 	ResponsiveContainer,
 } from "recharts";
+import useHttpRequest from "../../../hooks/use-HttpRequest";
 
 const monthNames = [
 	"Jan",
@@ -46,59 +47,50 @@ function StatSection() {
 		prevWeek,
 		fetchingData,
 	} = useWeek();
+	const sendRequest = useHttpRequest();
 
 	useEffect(() => {
 		async function getUserTime(user) {
-			let monthResponse;
-			let monthTime;
-			let yearResponse;
-			let yearTime;
+			// time for month
+			const monthTime = await sendRequest(
+				`http://localhost:5000/stats/getMonthsMinutes/${user.userId}/${
+					currentDate.getMonth() + 1
+				}`,
+				"GET",
+				{ "Content-type": "application/json" }
+			);
 
-			try {
-				monthResponse = await fetch(
-					`http://localhost:5000/stats/getMonthsMinutes/${
-						user.userId
-					}/${currentDate.getMonth() + 1}`,
-					{
-						headers: {
-							"Content-type": "application/json",
-						},
-					}
-				);
+			// time for year
+			const yearTime = await sendRequest(
+				`http://localhost:5000/stats/getYearsMinutes/${user.userId}/${
+					currentDate.getYear() + 1900
+				}`,
+				"GET",
+				{ "Content-type": "application/json" }
+			);
 
-				monthTime = await monthResponse.json();
-			} catch (err) {
+			// set time to 0 if there is an error
+			if (!monthTime) {
 				setMonthlyTime(0);
 			}
 
-			try {
-				yearResponse = await fetch(
-					`http://localhost:5000/stats/getYearsMinutes/${
-						user.userId
-					}/${currentDate.getYear() + 1900}`,
-					{
-						headers: {
-							"Content-type": "application/json",
-						},
-					}
-				);
-
-				yearTime = await yearResponse.json();
-			} catch (err) {
+			if (!yearTime) {
 				setYearlyTime(0);
 			}
 
+			// set monthly and yearly time, round down
 			setMonthlyTime(Math.floor(monthTime.monthlyTime) || 0);
 			setYearlyTime(Math.floor(yearTime.yearlyTime) || 0);
 		}
 
+		// set weekly time
 		if (userCtx.user.isLoggedIn) {
 			getFullWeek(userCtx.user).then((res) => {
 				setWeeklyTime(res);
 			});
 			getUserTime(userCtx.user);
 		}
-	}, [currentDate, userCtx.user, getFullWeek]);
+	}, [currentDate, userCtx.user, getFullWeek, sendRequest]);
 
 	return (
 		<>

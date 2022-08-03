@@ -23,10 +23,11 @@ function MainPage() {
 		toggleError,
 	} = useTimer();
 
+	// update title of document
 	useEffect(() => {
 		document.title = `${minutes}:${seconds}`;
 	}, [seconds]);
-	console.log("render");
+
 	return (
 		<>
 			{hasError && (
