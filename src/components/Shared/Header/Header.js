@@ -79,7 +79,6 @@ function Header() {
 
 			// set user to logged in along with storing name and picture, also set users settings
 			if (user) {
-				console.log(user);
 				userCtx.login(userInfo.name, userInfo.picture, userInfo.sub);
 				settingsCtx.changePomodoroLength(user.settings.pomodoroLength);
 				settingsCtx.changeLongBreakLength(

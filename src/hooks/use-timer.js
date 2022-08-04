@@ -58,8 +58,6 @@ function useTimer() {
 				userId: userCtx.user.userId,
 			})
 		);
-
-		console.log(message);
 	}
 
 	// sets app UI and logic to pomodoro mode
