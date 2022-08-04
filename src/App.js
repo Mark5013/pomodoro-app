@@ -5,6 +5,7 @@ import MainPage from "./components/MainPage/MainPage";
 import { ModeContextProvider } from "./store/modeContext";
 import { CircularProgress } from "@mui/material";
 import React from "react";
+import { HashRouter } from "react-router-dom";
 // import StatsPage from "./components/StatsPage/StatsPage";
 // import SettingsPage from "./components/SettingsPage/SettingsPage";
 
@@ -15,7 +16,7 @@ const SettingsPage = React.lazy(() =>
 
 function App() {
 	return (
-		<BrowserRouter>
+		<HashRouter>
 			<Suspense
 				fallback={
 					<div className="center">
@@ -36,7 +37,7 @@ function App() {
 					<Route path="*" element={<ErrorPage />} />
 				</Routes>
 			</Suspense>
-		</BrowserRouter>
+		</HashRouter>
 	);
 }
 
