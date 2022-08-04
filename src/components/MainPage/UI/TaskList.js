@@ -97,8 +97,6 @@ function TaskList() {
 				localStorage.getItem("tasks") || "[]"
 			);
 
-			console.log(currentTaskList);
-
 			currentTaskList.push({
 				title: task.title,
 				description: task.description,
