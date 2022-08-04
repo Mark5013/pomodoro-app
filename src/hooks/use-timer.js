@@ -23,7 +23,7 @@ function useTimer() {
 	function playSound() {
 		// create audio object and set volume, might allow users to customize later
 		const sound = new Audio(alarm.audio);
-		sound.volume = 0.1;
+		sound.volume = 0.13;
 		sound.play();
 
 		// fade audio out
@@ -49,7 +49,7 @@ function useTimer() {
 	// updates how long a user has spent in pomodoro mode
 	async function updateMinutes(dateStr, millisecondsPassed) {
 		const message = await sendRequest(
-			"http://localhost:5000/stats/updateMinutes",
+			`${process.env.REACT_APP_BACKEND_URL}/stats/updateMinutes`,
 			"POST",
 			{ "Content-type": "application/json" },
 			JSON.stringify({

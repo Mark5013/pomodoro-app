@@ -26,8 +26,8 @@ function TimerLengthSettings() {
 
 		// update the users length for pomodoro mode
 		const user = await sendRequest(
-			"http://localhost:5000/settings/updatePomodoroLength",
-			"POST",
+			`${process.env.REACT_APP_BACKEND_URL}/settings/updatePomodoroLength`,
+			"PATCH",
 			{ "Content-type": "application/json" },
 			JSON.stringify({
 				newLength,
@@ -46,8 +46,8 @@ function TimerLengthSettings() {
 
 		// update users length for short breaks
 		const user = await sendRequest(
-			"http://localhost:5000/settings/updateShortBreakLength",
-			"POST",
+			`${process.env.REACT_APP_BACKEND_URL}/settings/updateShortBreakLength`,
+			"PATCH",
 			{ "Content-type": "application/json" },
 			JSON.stringify({
 				newLength,
@@ -66,8 +66,8 @@ function TimerLengthSettings() {
 
 		// update users length for long breaks
 		const user = await sendRequest(
-			"http://localhost:5000/settings/updateLongBreakLength",
-			"POST",
+			`${process.env.REACT_APP_BACKEND_URL}/settings/updateLongBreakLength`,
+			"PATCH",
 			{ "Content-type": "application/json" },
 			JSON.stringify({
 				newLength,

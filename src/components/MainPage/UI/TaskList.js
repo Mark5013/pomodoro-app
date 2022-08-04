@@ -23,7 +23,7 @@ function TaskList() {
 			async function getUserTasks() {
 				// fetch user tasks from database
 				const userTasks = await sendRequest(
-					`http://localhost:5000/tasks/${userCtx.user.userId}`,
+					`${process.env.REACT_APP_BACKEND_URL}/tasks/${userCtx.user.userId}`,
 					"GET",
 					{ "Content-type": "application/json" }
 				);
@@ -74,7 +74,7 @@ function TaskList() {
 		if (userCtx.user.isLoggedIn) {
 			// get reponse from backend
 			const response = await sendRequest(
-				"http://localhost:5000/tasks/addTask",
+				`${process.env.REACT_APP_BACKEND_URL}/tasks/addTask`,
 				"POST",
 				{ "Content-type": "application/json" },
 				JSON.stringify({ task, userId: userCtx.user.userId })
@@ -113,7 +113,7 @@ function TaskList() {
 		if (userCtx.user.isLoggedIn) {
 			// response from backend with updated task
 			const response = await sendRequest(
-				"http://localhost:5000/tasks/editTask",
+				`${process.env.REACT_APP_BACKEND_URL}/tasks/editTask`,
 				"PATCH",
 				{ "Content-type": "application/json" },
 				JSON.stringify({
@@ -160,7 +160,7 @@ function TaskList() {
 		if (userCtx.user.isLoggedIn) {
 			// send delete request to backend
 			const response = await sendRequest(
-				`http://localhost:5000/tasks/deleteTask/${userCtx.user.userId}/${taskId}`,
+				`${process.env.REACT_APP_BACKEND_URL}/tasks/deleteTask/${userCtx.user.userId}/${taskId}`,
 				"DELETE",
 				{ "Content-type": "application/json" }
 			);

@@ -26,7 +26,7 @@ function Header() {
 	const logout = async () => {
 		// log user out
 		const response = await sendRequest(
-			"http://localhost:5000/logout",
+			`${process.env.REACT_APP_BACKEND_URL}/logout`,
 			"POST",
 			{ "Content-type": "application/json" },
 			null,
@@ -45,7 +45,7 @@ function Header() {
 		onSuccess: async (codeResponse) => {
 			// get access token
 			const accessToken = await sendRequest(
-				"http://localhost:5000/login",
+				`${process.env.REACT_APP_BACKEND_URL}/login`,
 				"POST",
 				{ "Content-type": "application/json" },
 				JSON.stringify(codeResponse),
@@ -68,7 +68,7 @@ function Header() {
 
 			// find or create google account, acc will be returned
 			const user = await sendRequest(
-				"http://localhost:5000/login/findOrCreate",
+				`${process.env.REACT_APP_BACKEND_URL}/login/findOrCreate`,
 				"POST",
 				{ "Content-type": "application/json" },
 				JSON.stringify({

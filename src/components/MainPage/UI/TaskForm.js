@@ -20,7 +20,7 @@ function TaskForm(props) {
 
 	function submitTaskForm(event) {
 		event.preventDefault();
-		// TODO form validation checks
+		// form checks
 		if (titleText.trim().length === 0) {
 			props.invalidInput("Title field is required to be filled out");
 			return;

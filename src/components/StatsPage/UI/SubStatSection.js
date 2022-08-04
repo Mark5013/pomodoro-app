@@ -25,7 +25,7 @@ function SubStatSection(props) {
 
 			// minutes returned
 			const minutes = await sendRequest(
-				`http://localhost:5000/stats/getMonthAndYearMinutes/${userCtx.user.userId}/${monthName}/${newYear}`,
+				`${process.env.REACT_APP_BACKEND_URL}/stats/getMonthAndYearMinutes/${userCtx.user.userId}/${monthName}/${newYear}`,
 				"GET",
 				{ "Content-type": "application/json" }
 			);
@@ -48,7 +48,7 @@ function SubStatSection(props) {
 
 			// minutes returned
 			const minutes = await sendRequest(
-				`http://localhost:5000/stats/getMonthAndYearMinutes/${userCtx.user.userId}/${newMonth}/${year}`,
+				`${process.env.REACT_APP_BACKEND_URL}/stats/getMonthAndYearMinutes/${userCtx.user.userId}/${newMonth}/${year}`,
 				"GET",
 				{ "Content-type": "application/json" }
 			);
@@ -71,7 +71,7 @@ function SubStatSection(props) {
 
 			// minutes returned
 			const minutes = await sendRequest(
-				`http://localhost:5000/stats/getYearsMinutes/${userCtx.user.userId}/${newYear}`,
+				`${process.env.REACT_APP_BACKEND_URL}/stats/getYearsMinutes/${userCtx.user.userId}/${newYear}`,
 				"GET",
 				{ "Content-type": "application/json" }
 			);

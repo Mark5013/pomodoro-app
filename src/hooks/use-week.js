@@ -40,7 +40,7 @@ function useWeek() {
 		// if any errors occur, will return 0
 		if (user.isLoggedIn) {
 			const minutes = await sendRequest(
-				`http://localhost:5000/stats/getDatesMinutes/${user.userId}/${curDate}`,
+				`${process.env.REACT_APP_BACKEND_URL}/stats/getDatesMinutes/${user.userId}/${curDate}`,
 				"GET",
 				{ "Content-type": "application/json" }
 			);

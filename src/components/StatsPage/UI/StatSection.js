@@ -53,18 +53,18 @@ function StatSection() {
 		async function getUserTime(user) {
 			// time for month
 			const monthTime = await sendRequest(
-				`http://localhost:5000/stats/getMonthsMinutes/${user.userId}/${
-					currentDate.getMonth() + 1
-				}`,
+				`${process.env.REACT_APP_BACKEND_URL}/stats/getMonthsMinutes/${
+					user.userId
+				}/${currentDate.getMonth() + 1}`,
 				"GET",
 				{ "Content-type": "application/json" }
 			);
 
 			// time for year
 			const yearTime = await sendRequest(
-				`http://localhost:5000/stats/getYearsMinutes/${user.userId}/${
-					currentDate.getYear() + 1900
-				}`,
+				`${process.env.REACT_APP_BACKEND_URL}/stats/getYearsMinutes/${
+					user.userId
+				}/${currentDate.getYear() + 1900}`,
 				"GET",
 				{ "Content-type": "application/json" }
 			);

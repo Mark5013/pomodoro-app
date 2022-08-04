@@ -43,6 +43,12 @@ function HowItWorks() {
 							you know the session has ended
 						</li>
 						<li>
+							After a pomodoro session, a short break session will
+							follow. After 4 pomodoro sessions, a long break
+							session will follow. Refreshing or leaving the page
+							will reset the count
+						</li>
+						<li>
 							You can start/pause the timer at your convenience
 							and switch between modes anytime you want
 						</li>

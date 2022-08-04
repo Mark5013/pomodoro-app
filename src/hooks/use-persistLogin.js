@@ -2,16 +2,18 @@ import { useCallback, useContext } from "react";
 import UserContext from "../store/userContext";
 import SettingsContext from "../store/settingsContext";
 import useHttpRequest from "./use-HttpRequest";
+import { useNavigate } from "react-router-dom";
 
 function usePersistLogin() {
 	const userCtx = useContext(UserContext);
 	const settingsCtx = useContext(SettingsContext);
 	const sendRequest = useHttpRequest();
+	const navigate = useNavigate();
 
 	const persistLogin = useCallback(async () => {
 		// get users token
 		const token = await sendRequest(
-			"http://localhost:5000/login/refreshToken",
+			`${process.env.REACT_APP_BACKEND_URL}/login/refreshToken`,
 			"POST",
 			{ "Content-type": "application/json" },
 			null,
@@ -19,6 +21,7 @@ function usePersistLogin() {
 		);
 
 		if (!token) {
+			navigate("/", { replace: true });
 			return;
 		}
 
@@ -30,12 +33,13 @@ function usePersistLogin() {
 		);
 
 		if (!userInfo) {
+			navigate("/", { replace: true });
 			return;
 		}
 
 		// find or create google account, will return users settings
 		const user = await sendRequest(
-			"http://localhost:5000/login/findOrCreate",
+			`${process.env.REACT_APP_BACKEND_URL}/login/findOrCreate`,
 			"POST",
 			{ "Content-type": "application/json" },
 			JSON.stringify({
@@ -50,8 +54,10 @@ function usePersistLogin() {
 			settingsCtx.changePomodoroLength(user.settings.pomodoroLength);
 			settingsCtx.changeLongBreakLength(user.settings.longBreakLength);
 			settingsCtx.changeShortBreakLength(user.settings.shortBreakLength);
+		} else {
+			navigate("/", { replace: true });
 		}
-	}, [userCtx, settingsCtx, sendRequest]);
+	}, [userCtx, settingsCtx, sendRequest, navigate]);
 
 	return { persistLogin };
 }
