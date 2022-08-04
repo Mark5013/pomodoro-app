@@ -94,8 +94,7 @@ function TaskList() {
 		} else {
 			// use local storage is user isn't logged in
 			let currentTaskList = JSON.parse(
-				localStorage.getItem("tasks"),
-				"[]"
+				localStorage.getItem("tasks") || "[]"
 			);
 
 			console.log(currentTaskList);
