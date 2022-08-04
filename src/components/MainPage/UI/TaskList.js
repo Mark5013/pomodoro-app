@@ -98,6 +98,8 @@ function TaskList() {
 				"[]"
 			);
 
+			console.log(currentTaskList);
+
 			currentTaskList.push({
 				title: task.title,
 				description: task.description,
