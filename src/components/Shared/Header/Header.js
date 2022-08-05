@@ -106,7 +106,8 @@ function Header() {
 			{showErrorModal && (
 				<ErrorModal
 					closeErrorModal={toggleErrorModal}
-					errorText="Failed logging in, try again later!"
+					errorText="Failed logging in! This is most likely because the backend server is asleep since I'm just a broke student 
+					using a free server. Wait a couple seconds and try again. If people actually start to use this, I will upgrade the server."
 				/>
 			)}
 			<div className={`${styles.header}`}>

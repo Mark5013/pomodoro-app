@@ -24,3 +24,9 @@ code {
 .longBreakBackground {
 	background-color: #2c3333;
 }
+
+.center {
+	display: flex;
+	justify-self: center;
+	align-self: center;
+}

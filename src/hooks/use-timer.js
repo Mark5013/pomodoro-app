@@ -17,6 +17,7 @@ function useTimer() {
 	const [seconds, setSeconds] = useState("00");
 	const [counter, setCounter] = useState(0);
 	const [hasError, setHasError] = useState(false);
+	const [timerRunning, setTimeRunning] = useState(false);
 	const alarm = { audio: SilkAlarm };
 
 	// will play alarm sound whenever a timer ends
@@ -63,7 +64,9 @@ function useTimer() {
 	// sets app UI and logic to pomodoro mode
 	function setPomodoroMode() {
 		//TODO IF TIMER RUNNING ALERT USER
-
+		if (timerRunning) {
+			alert("Timer will be reset, click ok to continue");
+		}
 		// CLEAR TIMER, SWITCH MODE, UPDATE TIMERLENGTH TO POMODOROMODE LENGTH AND UPDATE MINUTES/SECONDS
 		clearTimer();
 		modeCtx.switchMode("pomodoro");
@@ -77,7 +80,9 @@ function useTimer() {
 	// sets app UI and logic to short break mode
 	function setShortBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
-
+		if (timerRunning) {
+			alert("Timer will be reset, click ok to continue");
+		}
 		// CLEAR TIMER, MAKE SURE USER IS LOGGED IN, TIME IN POMODORO MODE IS > 0 AND WE ARE COMING FROM POMODORO MODE, THEN UPDATE MINUTES
 		// ALSO SWITCH MODE, SET MINUTES/SECONDS, AND SET TIMERLENGTH TO SHORT BREAK LENGTH
 		clearTimer();
@@ -106,7 +111,9 @@ function useTimer() {
 	// sets app UI and logic to long break mode
 	function setLongBreakMode() {
 		//TODO IF TIMER RUNNING ALERT USER
-
+		if (timerRunning) {
+			alert("Timer will be reset, click ok to continue");
+		}
 		// CLEAR TIMER, CHECK THAT USER IS LOGGED IN, TIME SPENT IN POMORODO MODE IS > 0 AND WE ARE COMING FROM POMODORO MODE, THEN UPDATE MINUTES
 		// ALSO SWITCH MODE, SET MINUTES/SECONDS, AND SET TIMER LENGTH TO LONG BREAK LENGTH
 		clearTimer();
@@ -132,6 +139,7 @@ function useTimer() {
 
 	// clears current interval, AKA pauses the timer
 	function clearTimer() {
+		setTimeRunning(false);
 		clearInterval(interval);
 	}
 
@@ -139,6 +147,7 @@ function useTimer() {
 	function startTimer() {
 		// convert minutes and seconds to milliseconds
 		timerLength = Number(minutes) * 60000 + Number(seconds) * 1000;
+		setTimeRunning(true);
 
 		interval = setInterval(() => {
 			// decrement timer length by 1 second every second
