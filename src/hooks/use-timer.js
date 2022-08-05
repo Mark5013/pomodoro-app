@@ -18,22 +18,26 @@ function useTimer() {
 	const [counter, setCounter] = useState(0);
 	const [hasError, setHasError] = useState(false);
 	const [timerRunning, setTimeRunning] = useState(false);
+	// browser restricts loading resources when tab is inactive, so sound must be loaded out here
 	const alarm = { audio: SilkAlarm };
+	const sound = new Audio(alarm.audio);
 
 	// will play alarm sound whenever a timer ends
 	function playSound() {
 		// create audio object and set volume, might allow users to customize later
-		const sound = new Audio(alarm.audio);
-		sound.volume = 0.13;
+
+		sound.volume = 0.15;
 		sound.play();
 
 		// fade audio out
 		const audioInterval = setInterval(() => {
-			if (sound.paused) {
+			if (sound.paused || sound.volume === 0) {
 				clearInterval(audioInterval);
 			}
-			sound.volume -= 0.01;
-		}, 500);
+			if (sound.volume > 0) {
+				sound.volume -= 0.03;
+			}
+		}, 1000);
 
 		// pause the audio after 5 seconds
 		setTimeout(() => sound.pause(), 5000);
