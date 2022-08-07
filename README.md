@@ -11,6 +11,7 @@
     lengths in the settings page. More settings will most likely be coming soon like being able to change the sound of the timer and other things
     of that nature.
   </p>
+  Can be found at: https://www.pomotracker.tech/
 </div>
 
 <h2>Timer page demo</h2>
