@@ -86,7 +86,11 @@ function TimerLengthSettings() {
 			<div className={styles.input}>
 				<p className={styles.inputTitle}>Pomodoro timer length:</p>
 				<FormControl size="small">
-					<InputLabel id="pomodoro-select-label">Length</InputLabel>
+					<InputLabel
+						id="pomodoro-select-label"
+						data-testid="pomodoro-select">
+						Length
+					</InputLabel>
 					<Select
 						labelId="pomodoro-select-label"
 						id="pomodoro-select"
@@ -117,6 +121,7 @@ function TimerLengthSettings() {
 					<Select
 						labelId="short-break-select-label"
 						id="short-break-select"
+						data-testid="short-break-select"
 						value={shortBreakLength}
 						label="short-break-mode-length"
 						onChange={handleShortBreakChange}>
@@ -142,6 +147,7 @@ function TimerLengthSettings() {
 					<Select
 						labelId="long-break-select-label"
 						id="long-break-select"
+						data-testid="long-break-select"
 						value={longBreakLength}
 						label="long-break-length"
 						onChange={handleLongBreakChange}>

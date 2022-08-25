@@ -53,7 +53,10 @@ export default function LongMenu(props) {
 					},
 				}}>
 				{options.map((option) => (
-					<MenuItem key={option} onClick={handleClose}>
+					<MenuItem
+						key={option}
+						onClick={handleClose}
+						data-testid="menu-item">
 						{option}
 					</MenuItem>
 				))}
